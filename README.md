@@ -1,5 +1,5 @@
 # animetion
-hello guys i am rakhi sawant
+
 anime streaming app
 
 ## Getting Started

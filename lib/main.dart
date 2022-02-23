@@ -15,10 +15,6 @@ class _AnimetionState extends State<Animetion> {
     return Container(
       color: Colors.white,
       child: Column(
-        children: [
-          Card(
-          ),
-        ],
       ),
     );
   }
