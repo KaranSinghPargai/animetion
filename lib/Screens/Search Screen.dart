@@ -1,3 +1,4 @@
+import 'package:animetion/networking.dart';
 import 'package:flutter/material.dart';
 import 'animeHomeScreen.dart';
 
@@ -17,6 +18,8 @@ class _SearchScreenState extends State<SearchScreen> {
           TextField(
             onSubmitted:(newVal){
               setState(() {
+                Networking networking = Networking();
+                networking.jikanApiCall(newVal);
               });
             },
             decoration: const InputDecoration(
