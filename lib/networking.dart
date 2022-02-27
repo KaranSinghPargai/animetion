@@ -17,7 +17,6 @@ class Networking{
   }
 
   Future jikanApiCallTopAnime()async{
-    String url;
     http.Response apiResponse;
     apiResponse = await http.get(Uri.parse('$jikanApiURL/top/anime'));
     print(apiResponse.statusCode);

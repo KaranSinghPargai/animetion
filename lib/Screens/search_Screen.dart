@@ -1,47 +1,36 @@
-import 'package:animetion/Screens/search_Screen.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:animetion/networking.dart';
+import 'package:flutter/material.dart';
 
-class AnimeHomeScreen extends StatefulWidget {
+class SearchScreen extends StatefulWidget {
   @override
-  _AnimeHomeScreenState createState() => _AnimeHomeScreenState();
+  _SearchScreenState createState() => _SearchScreenState();
 }
 
-class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
-  Networking netWorking = Networking();
+Networking networking = Networking();
 
-  @override
-  void initState() {
-    netWorking.jikanApiCallTopAnime();
-    super.initState();
-  }
-
+class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        backgroundColor: Color(0xff3F3351),
-        appBar: AppBar(
-          backgroundColor:  Color(0xff3F3351),
-          title: Center(
-            child: Text('Animetion'),
-          ),
-          actions: [
-            TextButton(
-              child: Icon(Icons.search,color: Color(0xffE9A6A6),),
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) {
-                  return SearchScreen();
-                }));
-              },
-            ),
-          ],
-        ),
+        backgroundColor:  Color(0xff3F3351),
         body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            TextField(
+              onSubmitted:(newVal){
+                setState(() {
+                  networking.jikanApiCall(newVal);
+                });
+              },
+              decoration: const InputDecoration(
+                hintText: 'Search Anime Here',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(20.0),
+                  ),
+                ),
+              ),
+            ),
             Expanded(
               child: GridView.builder(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -50,9 +39,9 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
                     crossAxisSpacing: 5.0,
                     mainAxisSpacing: 5.0,
                   ),
-                  itemCount: netWorking.listResponse.isEmpty
+                  itemCount: networking.listResponse.isEmpty
                       ? 0
-                      : netWorking.listResponse.length,
+                      : networking.listResponse.length,
                   itemBuilder: (context, index) {
                     return Container(
                       padding: EdgeInsets.all(10.0),
@@ -79,25 +68,13 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
                         ),
                       ),
                       child: Image.network(
-                        netWorking.listResponse[index]['images']['jpg']
-                            ['image_url'],
+                        networking.listResponse[index]['images']['jpg']
+                        ['image_url'],
                         fit: BoxFit.cover,
                       ),
                     );
                   }),
             ),
-          ],
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          backgroundColor:  Color(0xff3F3351),
-          unselectedItemColor: Color(0xffE9A6A6).withOpacity(0.5),
-          selectedItemColor: Color(0xffE9A6A6),
-          onTap: null,
-          items: [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-            BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.info_outline), label: 'Info'),
           ],
         ),
       ),
