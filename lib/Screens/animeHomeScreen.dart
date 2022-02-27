@@ -10,7 +10,6 @@ class AnimeHomeScreen extends StatefulWidget {
 
 class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
   Networking netWorking = Networking();
-
   @override
   void initState() {
     netWorking.jikanApiCallTopAnime();
@@ -21,86 +20,74 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        backgroundColor: Color(0xff3F3351),
-        appBar: AppBar(
-          backgroundColor:  Color(0xff3F3351),
-          title: Center(
-            child: Text('Animetion'),
+          backgroundColor: Color(0xff3F3351),
+          appBar: AppBar(
+            backgroundColor:  Color(0xff3F3351),
+            title: Center(
+              child: Text('Animetion'),
+            ),
+            actions: [
+              TextButton(
+                child: Icon(Icons.search,color: Color(0xffE9A6A6),),
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) {
+                    return SearchScreen();
+                  }));
+                },
+              ),
+            ],
           ),
-          actions: [
-            TextButton(
-              child: Icon(Icons.search,color: Color(0xffE9A6A6),),
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) {
-                  return SearchScreen();
-                }));
-              },
-            ),
-          ],
-        ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Expanded(
-              child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    childAspectRatio: 0.7,
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 5.0,
-                    mainAxisSpacing: 5.0,
-                  ),
-                  itemCount: netWorking.listResponse.isEmpty
-                      ? 0
-                      : netWorking.listResponse.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      padding: EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            begin: FractionalOffset.topLeft,
-                            end: FractionalOffset.bottomRight,
-                            colors: [
-                              Color(0xff3F3351).withOpacity(1),
-                              Color(0xff864879).withOpacity(0.7),
-                              Color(0xff864879).withOpacity(0.5),
-                              Color(0xff864879).withOpacity(0.3),
-                              Color(0xff864879).withOpacity(0.0),
-                            ],
-                            stops: const [
-                              0.0,
-                              0.25,
-                              0.5,
-                              0.75,
-                              1.0
-                            ]),
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(20.0),
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Expanded(
+                child: GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      childAspectRatio: 0.7,
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 5.0,
+                      mainAxisSpacing: 5.0,
+                    ),
+                    itemCount: netWorking.listResponse.isEmpty
+                        ? 0
+                        : netWorking.listResponse.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        padding: EdgeInsets.all(10.0),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              begin: FractionalOffset.topLeft,
+                              end: FractionalOffset.bottomRight,
+                              colors: [
+                                Color(0xff3F3351).withOpacity(1),
+                                Color(0xff864879).withOpacity(0.7),
+                                Color(0xff864879).withOpacity(0.5),
+                                Color(0xff864879).withOpacity(0.3),
+                                Color(0xff864879).withOpacity(0.0),
+                              ],
+                              stops: const [
+                                0.0,
+                                0.25,
+                                0.5,
+                                0.75,
+                                1.0
+                              ]),
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(20.0),
+                          ),
                         ),
-                      ),
-                      child: Image.network(
-                        netWorking.listResponse[index]['images']['jpg']
-                            ['image_url'],
-                        fit: BoxFit.cover,
-                      ),
-                    );
-                  }),
-            ),
-          ],
+                        child: Image.network(
+                          netWorking.listResponse[index]['images']['jpg']
+                              ['image_url'],
+                          fit: BoxFit.cover,
+                        ),
+                      );
+                    }),
+              ),
+            ],
+          ),
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          backgroundColor:  Color(0xff3F3351),
-          unselectedItemColor: Color(0xffE9A6A6).withOpacity(0.5),
-          selectedItemColor: Color(0xffE9A6A6),
-          onTap: null,
-          items: [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-            BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.info_outline), label: 'Info'),
-          ],
-        ),
-      ),
     );
   }
 }

@@ -2,18 +2,15 @@ import 'package:animetion/Screens/animeHomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:animetion/Screens/home_Screen.dart';
 
 const String jikanApiURL = 'https://api.jikan.moe/v4';
 void main() {
   runApp(Animetion());
 }
 
-class Animetion extends StatefulWidget {
-  @override
-  _AnimetionState createState() => _AnimetionState();
-}
+class Animetion extends StatelessWidget {
 
-class _AnimetionState extends State<Animetion> {
   // List listResponse = [];
   // Map mapResponse={};
   //
@@ -38,7 +35,7 @@ class _AnimetionState extends State<Animetion> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: AnimeHomeScreen(),
+      home:HomeScreen(),
     );
   }
 }
