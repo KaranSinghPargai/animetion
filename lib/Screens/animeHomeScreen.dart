@@ -10,11 +10,6 @@ class AnimeHomeScreen extends StatefulWidget {
 
 class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
   Networking netWorking = Networking();
-  @override
-  void initState() {
-    netWorking.jikanApiCallTopAnime();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,52 +33,61 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
               ),
             ],
           ),
-          body: Column(
+          body:Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Expanded(
-                child: GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      childAspectRatio: 0.7,
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 5.0,
-                      mainAxisSpacing: 5.0,
-                    ),
-                    itemCount: netWorking.listResponse.isEmpty
-                        ? 0
-                        : netWorking.listResponse.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        padding: EdgeInsets.all(10.0),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                              begin: FractionalOffset.topLeft,
-                              end: FractionalOffset.bottomRight,
-                              colors: [
-                                Color(0xff3F3351).withOpacity(1),
-                                Color(0xff864879).withOpacity(0.7),
-                                Color(0xff864879).withOpacity(0.5),
-                                Color(0xff864879).withOpacity(0.3),
-                                Color(0xff864879).withOpacity(0.0),
-                              ],
-                              stops: const [
-                                0.0,
-                                0.25,
-                                0.5,
-                                0.75,
-                                1.0
-                              ]),
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(20.0),
+                child: FutureBuilder(
+                    future: netWorking.jikanApiCallTopAnime(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        // Future hasn't finished yet, return a placeholder
+                        return Text('Loading');
+                      }
+                      return GridView.builder(
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            childAspectRatio: 0.7,
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 5.0,
+                            mainAxisSpacing: 5.0,
                           ),
-                        ),
-                        child: Image.network(
-                          netWorking.listResponse[index]['images']['jpg']
-                              ['image_url'],
-                          fit: BoxFit.cover,
-                        ),
-                      );
-                    }),
+                          itemCount: networking.listResponse.isEmpty
+                              ? 0
+                              : networking.listResponse.length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              padding: EdgeInsets.all(10.0),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                    begin: FractionalOffset.topLeft,
+                                    end: FractionalOffset.bottomRight,
+                                    colors: [
+                                      Color(0xff3F3351).withOpacity(1),
+                                      Color(0xff864879).withOpacity(0.7),
+                                      Color(0xff864879).withOpacity(0.5),
+                                      Color(0xff864879).withOpacity(0.3),
+                                      Color(0xff864879).withOpacity(0.0),
+                                    ],
+                                    stops: const [
+                                      0.0,
+                                      0.25,
+                                      0.5,
+                                      0.75,
+                                      1.0
+                                    ]),
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(20.0),
+                                ),
+                              ),
+                              child: Image.network(
+                                networking.listResponse[index]['images']['jpg']
+                                ['image_url'],
+                                fit: BoxFit.cover,
+                              ),
+                            );
+                          });
+                    }
+                ),
               ),
             ],
           ),
@@ -91,3 +95,6 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
     );
   }
 }
+
+//netWorking.listResponse[index]['images']['jpg']
+//                               ['image_url'],

@@ -1,3 +1,4 @@
+import 'package:animetion/Screens/animeInfoPage.dart';
 import 'package:animetion/networking.dart';
 import 'package:flutter/material.dart';
 
@@ -7,17 +8,18 @@ class SearchScreen extends StatefulWidget {
 }
 
 Networking networking = Networking();
+int animeID=0;
 
 class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        backgroundColor:  Color(0xff3F3351),
+        backgroundColor: Color(0xff3F3351),
         body: Column(
           children: [
             TextField(
-              onSubmitted:(newVal){
+              onSubmitted: (newVal) {
                 setState(() {
                   networking.jikanApiCall(newVal);
                 });
@@ -67,10 +69,25 @@ class _SearchScreenState extends State<SearchScreen> {
                           Radius.circular(20.0),
                         ),
                       ),
-                      child: Image.network(
-                        networking.listResponse[index]['images']['jpg']
-                        ['image_url'],
-                        fit: BoxFit.cover,
+                      child: FloatingActionButton(
+                        onPressed: () {
+                          setState(() {
+                            animeID = networking.listResponse[index]['mal_id'];
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return AnimeInfoPage(animeID,index);
+                            }));
+                          });
+                        },
+                        child: Container(
+                          height: 400,
+                          width: 200,
+                          child: Image.network(
+                            networking.listResponse[index]['images']['jpg']
+                                ['image_url'],
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
                     );
                   }),
