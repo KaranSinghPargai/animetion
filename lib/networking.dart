@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -9,7 +6,8 @@ class Networking{
   Map mapResponse={};
   List listResponse=[];
 
-  Future jikanApiCall(String searchAnime) async {
+  Future jikanApiCallSearchedAnime(String searchAnime) async {
+    print('Search Anime called');
     http.Response apiResponse;
     apiResponse = await http.get(Uri.parse('$jikanApiURL/anime?q=$searchAnime'));
     print(apiResponse.statusCode);
@@ -17,9 +15,11 @@ class Networking{
         mapResponse = json.decode(apiResponse.body);
         listResponse = mapResponse['data'];
     }
+    return listResponse;
   }
 
   Future jikanApiCallTopAnime()async{
+    print('Top Anime called');
     http.Response apiResponse;
     apiResponse = await http.get(Uri.parse('$jikanApiURL/top/anime'));
     print(apiResponse.statusCode);

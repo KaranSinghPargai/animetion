@@ -2,7 +2,7 @@ import 'package:animetion/networking.dart';
 import 'package:flutter/material.dart';
 
 class AnimeInfoPage extends StatefulWidget {
-  AnimeInfoPage(@required this.animeID, @required this.animeIDIndex);
+  AnimeInfoPage({required this.animeID, required this.animeIDIndex});
   final animeID;
   int animeIDIndex;
   @override
@@ -28,7 +28,7 @@ class _AnimeInfoPageState extends State<AnimeInfoPage> {
             Container(
               height: 400,
               width: 200,
-              child: Text(networking.listResponse[widget.animeID]['url'].toString()),
+              child: Text(networking.listResponse[widget.animeIDIndex]['mal_id'].toString())
             ),
           ],
         ),
@@ -36,3 +36,4 @@ class _AnimeInfoPageState extends State<AnimeInfoPage> {
     );
   }
 }
+// data[0].images.jpg.large_image_url
