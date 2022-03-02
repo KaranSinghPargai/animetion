@@ -2,8 +2,9 @@ import 'package:animetion/networking.dart';
 import 'package:flutter/material.dart';
 
 class AnimeInfoPage extends StatefulWidget {
-  AnimeInfoPage({required this.animeID, required this.animeIDIndex});
-  final animeID;
+  AnimeInfoPage(this.listResponse, this.animeIDIndex);
+  List listResponse;
+  // final animeID;
   int animeIDIndex;
   @override
   _AnimeInfoPageState createState() => _AnimeInfoPageState();
@@ -22,18 +23,54 @@ class _AnimeInfoPageState extends State<AnimeInfoPage> {
             child: Text('Animetion'),
           ),
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              height: 400,
-              width: 200,
-              child: Text(networking.listResponse[widget.animeIDIndex]['mal_id'].toString())
-            ),
-          ],
+        body: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 285,
+                    width: 200,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        fit: BoxFit.fill,
+                        image: NetworkImage(
+                          widget.listResponse[widget.animeIDIndex]['images']
+                              ['jpg']['image_url'],
+                        ),
+                      ),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(20.0),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      widget.listResponse[widget.animeIDIndex]['title']
+                          .toString(),
+                      style: TextStyle(
+                          color: Color(0xffE9A6A6),
+                          fontFamily: 'Asap',
+                          fontSize: 25.0),
+                    ),
+                  ),
+                  Text(widget.listResponse[widget.animeIDIndex]['type'],style:TextStyle(
+                      color: Color(0xffE9A6A6),
+                      fontFamily: 'Asap',
+                      fontSize: 10.0)),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
-// data[0].images.jpg.large_image_url
+//data[0].title

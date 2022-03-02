@@ -92,14 +92,14 @@ class _SearchScreenState extends State<SearchScreen> {
                             Radius.circular(20.0),
                           ),
                         ),
-                        child: FloatingActionButton(
-                          onPressed: () {
-                            setState(() {
+                        child: GestureDetector(
+                          onTap: () {
+                            setState((){
                               animeID =
                                   networking.listResponse[index]['mal_id'];
                               Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
-                                return AnimeInfoPage(animeID: animeID, animeIDIndex: index);
+                                  MaterialPageRoute(builder: (context){
+                                return AnimeInfoPage(networking.listResponse,index);
                               }));
                             });
                           },

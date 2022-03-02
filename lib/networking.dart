@@ -27,6 +27,7 @@ class Networking{
       mapResponse= json.decode(apiResponse.body);
       listResponse = mapResponse['data'];
     }
+    print(listResponse);
     return listResponse;
   }
 
