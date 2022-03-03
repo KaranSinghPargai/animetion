@@ -25,110 +25,160 @@ class _AnimeInfoPageState extends State<AnimeInfoPage> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(10.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
+          child: ListView(
+            scrollDirection: Axis.vertical,
             children: [
-              Container(
-                height: 285,
-                width: 200,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    fit: BoxFit.fill,
-                    image: NetworkImage(
-                      widget.listResponse[widget.animeIDIndex]['images']['jpg']
-                          ['image_url'],
-                    ),
+              Column(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          height: 285,
+                          width: 200,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              fit: BoxFit.fill,
+                              image: NetworkImage(
+                                widget.listResponse[widget.animeIDIndex]
+                                    ['images']['jpg']['image_url'],
+                              ),
+                            ),
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(5.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      Expanded(
+                        flex: 1,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.listResponse[widget.animeIDIndex]['title']
+                                  .toString(),
+                              style: TextStyle(
+                                  color: Color(0xffE9A6A6),
+                                  fontFamily: 'Asap',
+                                  fontSize: 25.0),
+                            ),
+                            Chip(
+                              label: Text(
+                                widget.listResponse[widget.animeIDIndex]
+                                    ['type'],
+                                style: TextStyle(
+                                    color: Color(0xff3F3351),
+                                    fontFamily: 'Asap',
+                                    fontSize: 15.0),
+                              ),
+                              elevation: 5,
+                              shadowColor: Color(0xffE9A6A6),
+                            ),
+                            Text(
+                              'Released : ' +
+                                  widget.listResponse[widget.animeIDIndex]
+                                      ['status'],
+                              style: TextStyle(
+                                  color: Color(0xffE9A6A6),
+                                  fontFamily: 'Asap',
+                                  fontSize: 16.0),
+                            ),
+                            Chip(
+                              label: Text(
+                                widget.listResponse[widget.animeIDIndex]
+                                    ['rating'],
+                                style: TextStyle(
+                                    color: Color(0xff3F3351),
+                                    fontFamily: 'Asap',
+                                    fontSize: 12.0),
+                              ),
+                            ),
+                            ListTile(
+                              leading: Icon(
+                                Icons.star,
+                                size: 70,
+                                color: Color(0xffe9a6a6),
+                              ),
+                              trailing: Text(
+                                widget.listResponse[widget.animeIDIndex]
+                                        ['score']
+                                    .toString(),
+                                style: TextStyle(
+                                    color: Color(0xffe9a6a6),
+                                    fontFamily: 'Asap',
+                                    fontSize: 35.0),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(20.0),
-                  ),
-                ),
-              ),
-              SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.listResponse[widget.animeIDIndex]['title']
-                          .toString(),
+                  SizedBox(height: 10.0),
+                  ExpansionTile(
+                    collapsedIconColor: Color(0xffE9A6A6),
+                    title: Text(
+                      'Synopsis',
                       style: TextStyle(
                           color: Color(0xffE9A6A6),
                           fontFamily: 'Asap',
-                          fontSize: 25.0),
+                          fontSize: 16.0),
                     ),
-                    Expanded(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Chip(
-                                  label: Text(
-                                    widget.listResponse[widget.animeIDIndex]
-                                        ['type'],
-                                    style: TextStyle(
-                                        color: Color(0xff3F3351),
-                                        fontFamily: 'Asap',
-                                        fontSize: 15.0),
-                                  ),
-                                  elevation: 5,
-                                  shadowColor: Color(0xffE9A6A6),
-                                ),
-                                Text(
-                                  'Released : ' +
-                                      widget.listResponse[widget.animeIDIndex]
-                                          ['status'],
-                                  style: TextStyle(
-                                      color: Color(0xffE9A6A6),
-                                      fontFamily: 'Asap',
-                                      fontSize: 16.0),
-                                ),
-                                Chip(
-                                  label: Text(
-                                    widget.listResponse[widget.animeIDIndex]
-                                        ['rating'],
-                                    style: TextStyle(
-                                        color: Color(0xff3F3351),
-                                        fontFamily: 'Asap',
-                                        fontSize: 12.0),
-                                  ),
-                                ),
-                                Row(
-                                  children: [
-                                    Center(
-                                      child: Icon(
-                                        Icons.star,
-                                        size: 70,
-                                        color: Color(0xffe9a6a6),
-                                      ),
-                                    ),
-                                    SizedBox(width: 15,),
-                                    Text(
-                                      widget.listResponse[widget.animeIDIndex]
-                                          ['score'].toString(),
-                                      style: TextStyle(
-                                          color: Color(0xffe9a6a6),
-                                          fontFamily: 'Asap',
-                                          fontSize: 35.0),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                    children: [
+                      ListTile(
+                        title: Text(
+                          widget.listResponse[widget.animeIDIndex]['synopsis']
+                              .toString(),
+                          style: TextStyle(
+                              color: Color(0xffE9A6A6),
+                              fontFamily: 'Asap',
+                              fontSize: 16.0),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+                  SizedBox(height: 10.0),
+                  FutureBuilder(
+                      future: networking.jikanApiCallGetAnimeVideos(
+                          widget.listResponse[widget.animeIDIndex]['mal_id']),
+                      builder: (context, snapshots) {
+                        if (snapshots.data == null) {
+                          return Text('loading');
+                        }
+                        print(snapshots.data);
+                        return SizedBox(
+                          height: 400,
+                          child: ListView.builder(
+                              itemCount: networking.listResponse.length,
+                              itemBuilder: (context, index) {
+                                print(networking.listResponse.length);
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ListTile(leading: Text(
+                                    'Episode' +
+                                        networking.listResponse[index]['mal_id']
+                                            .toString(),
+                                    style: TextStyle(
+                                      color:Color(0xffE9A6A6),
+                                      fontSize: 16,
+                                      fontFamily: 'Asap',
+                                    ),
+                                  ),
+                                  trailing: GestureDetector(
+                                    child: Icon(Icons.play_arrow_rounded,size: 20.0, color: Colors.white,),
+                                  ),
+                                  )
+                                );
+                              }),
+                        );
+                      })
+                ],
               ),
             ],
           ),
@@ -137,3 +187,14 @@ class _AnimeInfoPageState extends State<AnimeInfoPage> {
     );
   }
 }
+// Expanded(
+// child: FutureBuilder(
+// future: networking.jikanApiCallGetAnimeVideos(
+// widget.listResponse[widget.animeIDIndex]['mal_id']),
+// builder: (context, snapshots) {
+// if (snapshots.data == null) {
+// return Text('loading');
+// }
+// print(snapshots.data);
+// return Text(snapshots.data.toString());
+// }),

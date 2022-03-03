@@ -61,9 +61,9 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
                             crossAxisSpacing: 10.0,
                             mainAxisSpacing: 10.0,
                           ),
-                          itemCount: netWorking.listResponse.isEmpty
+                          itemCount: netWorking.listResponseTopAnime.isEmpty
                               ? 0
-                              : netWorking.listResponse.length,
+                              : netWorking.listResponseTopAnime.length,
                           itemBuilder: (context, index) {
                             return Container(
                               padding: EdgeInsets.all(10.0),
@@ -71,7 +71,7 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
                                 image: DecorationImage(
                                   fit: BoxFit.fill,
                                   image: NetworkImage(
-                                    netWorking.listResponse[index]['images']
+                                    netWorking.listResponseTopAnime[index]['images']
                                         ['jpg']['image_url'],
                                   ),
                                 ),
@@ -93,7 +93,7 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
                                       1.0
                                     ]),
                                 borderRadius: const BorderRadius.all(
-                                  Radius.circular(20.0),
+                                  Radius.circular(5.0),
                                 ),
                               ),
                               child: GestureDetector(
@@ -102,7 +102,7 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
                                     Navigator.push(context,
                                         MaterialPageRoute(builder: (context) {
                                       return AnimeInfoPage(
-                                          netWorking.listResponse, index);
+                                          netWorking.listResponseTopAnime, index);
                                     }));
                                   });
                                 },

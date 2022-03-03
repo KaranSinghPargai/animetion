@@ -5,6 +5,10 @@ class Networking{
   String jikanApiURL = 'https://api.jikan.moe/v4';
   Map mapResponse={};
   List listResponse=[];
+  Map mapResponseTopAnime={};
+  Map mapResponseSearchAnime={};
+  List listResponseTopAnime=[];
+  List listResponseSearchAnime=[];
 
   Future jikanApiCallSearchedAnime(String searchAnime) async {
     print('Search Anime called');
@@ -12,10 +16,11 @@ class Networking{
     apiResponse = await http.get(Uri.parse('$jikanApiURL/anime?q=$searchAnime'));
     print(apiResponse.statusCode);
     if (apiResponse.statusCode == 200) {
-        mapResponse = json.decode(apiResponse.body);
-        listResponse = mapResponse['data'];
+        mapResponseSearchAnime = json.decode(apiResponse.body);
+        listResponseSearchAnime = mapResponseSearchAnime['data'];
+        listResponse= listResponseSearchAnime;
     }
-    return listResponse;
+    return listResponseSearchAnime;
   }
 
   Future jikanApiCallTopAnime()async{
@@ -24,20 +29,25 @@ class Networking{
     apiResponse = await http.get(Uri.parse('$jikanApiURL/top/anime'));
     print(apiResponse.statusCode);
     if(apiResponse.statusCode==200){
-      mapResponse= json.decode(apiResponse.body);
-      listResponse = mapResponse['data'];
+      mapResponseTopAnime= json.decode(apiResponse.body);
+      listResponseTopAnime = mapResponseTopAnime['data'];
+      listResponse=listResponseTopAnime;
     }
-    print(listResponse);
-    return listResponse;
+    print(listResponseTopAnime);
+    return listResponseTopAnime;
   }
 
   Future jikanApiCallGetAnimeVideos(int id)async{
+    print('vid fxn called');
     http.Response apiResponse;
-    apiResponse =await http.get(Uri.parse('$jikanApiURL/$id/videos'));
+    apiResponse =await http.get(Uri.parse('$jikanApiURL/anime/$id/videos'));
+    print(id);
     print(apiResponse.statusCode);
     if(apiResponse.statusCode==200){
+      print('sucess');
       mapResponse = json.decode(apiResponse.body);
-      listResponse= mapResponse['data'];
+      listResponse= mapResponse['data']['episodes'];
     }
+    return listResponse;
   }
 }
