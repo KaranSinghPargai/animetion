@@ -25,33 +25,34 @@ class _AnimeInfoPageState extends State<AnimeInfoPage> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(10.0),
-          child: Column(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    height: 285,
-                    width: 200,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: NetworkImage(
-                          widget.listResponse[widget.animeIDIndex]['images']
-                              ['jpg']['image_url'],
-                        ),
-                      ),
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(20.0),
-                      ),
+              Container(
+                height: 285,
+                width: 200,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    fit: BoxFit.fill,
+                    image: NetworkImage(
+                      widget.listResponse[widget.animeIDIndex]['images']['jpg']
+                          ['image_url'],
                     ),
                   ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(20.0),
+                  ),
+                ),
+              ),
+              SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
                       widget.listResponse[widget.animeIDIndex]['title']
                           .toString(),
                       style: TextStyle(
@@ -59,12 +60,75 @@ class _AnimeInfoPageState extends State<AnimeInfoPage> {
                           fontFamily: 'Asap',
                           fontSize: 25.0),
                     ),
-                  ),
-                  Text(widget.listResponse[widget.animeIDIndex]['type'],style:TextStyle(
-                      color: Color(0xffE9A6A6),
-                      fontFamily: 'Asap',
-                      fontSize: 10.0)),
-                ],
+                    Expanded(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Chip(
+                                  label: Text(
+                                    widget.listResponse[widget.animeIDIndex]
+                                        ['type'],
+                                    style: TextStyle(
+                                        color: Color(0xff3F3351),
+                                        fontFamily: 'Asap',
+                                        fontSize: 15.0),
+                                  ),
+                                  elevation: 5,
+                                  shadowColor: Color(0xffE9A6A6),
+                                ),
+                                Text(
+                                  'Released : ' +
+                                      widget.listResponse[widget.animeIDIndex]
+                                          ['status'],
+                                  style: TextStyle(
+                                      color: Color(0xffE9A6A6),
+                                      fontFamily: 'Asap',
+                                      fontSize: 16.0),
+                                ),
+                                Chip(
+                                  label: Text(
+                                    widget.listResponse[widget.animeIDIndex]
+                                        ['rating'],
+                                    style: TextStyle(
+                                        color: Color(0xff3F3351),
+                                        fontFamily: 'Asap',
+                                        fontSize: 12.0),
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    Center(
+                                      child: Icon(
+                                        Icons.star,
+                                        size: 70,
+                                        color: Color(0xffe9a6a6),
+                                      ),
+                                    ),
+                                    SizedBox(width: 15,),
+                                    Text(
+                                      widget.listResponse[widget.animeIDIndex]
+                                          ['score'].toString(),
+                                      style: TextStyle(
+                                          color: Color(0xffe9a6a6),
+                                          fontFamily: 'Asap',
+                                          fontSize: 35.0),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -73,4 +137,3 @@ class _AnimeInfoPageState extends State<AnimeInfoPage> {
     );
   }
 }
-//data[0].title

@@ -22,6 +22,7 @@ class _SearchScreenState extends State<SearchScreen> {
           child: Column(
             children: [
               TextField(
+                autofocus: true,
                 style: const TextStyle(
                   color: Color(0xffE9A6A6),
                   fontFamily: 'Asap',
@@ -58,7 +59,7 @@ class _SearchScreenState extends State<SearchScreen> {
               Expanded(
                 child: GridView.builder(
                     gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
+                    const SliverGridDelegateWithFixedCrossAxisCount(
                       childAspectRatio: 0.7,
                       crossAxisCount: 2,
                       crossAxisSpacing: 5.0,
@@ -96,11 +97,11 @@ class _SearchScreenState extends State<SearchScreen> {
                           onTap: () {
                             setState((){
                               animeID =
-                                  networking.listResponse[index]['mal_id'];
+                              networking.listResponse[index]['mal_id'];
                               Navigator.push(context,
                                   MaterialPageRoute(builder: (context){
-                                return AnimeInfoPage(networking.listResponse,index);
-                              }));
+                                    return AnimeInfoPage(networking.listResponse,index);
+                                  }));
                             });
                           },
                           child: Container(
@@ -108,7 +109,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             width: 200,
                             child: Image.network(
                               networking.listResponse[index]['images']['jpg']
-                                  ['image_url'],
+                              ['image_url'],
                               fit: BoxFit.cover,
                             ),
                           ),
