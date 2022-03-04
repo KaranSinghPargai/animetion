@@ -3,6 +3,7 @@ import 'package:animetion/Screens/search_Screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:animetion/networking.dart';
+import 'dart:math';
 
 class AnimeHomeScreen extends StatefulWidget {
   @override
@@ -11,13 +12,19 @@ class AnimeHomeScreen extends StatefulWidget {
 
 class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
   Networking netWorking = Networking();
-
+  int randomImageGenerator=0;
+@override
+  void initState() {
+    randomImageGenerator= Random().nextInt(13);
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        backgroundColor: Color(0xff3F3351),
+        backgroundColor: Color(0xff3F3351).withOpacity(0.8),
         appBar: AppBar(
+          automaticallyImplyLeading: true,
           backgroundColor: Color(0xff3F3351),
           title: Center(
             child: Text(
@@ -40,7 +47,6 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
           ],
         ),
         body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Expanded(
               child: FutureBuilder(
@@ -48,7 +54,7 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
                       // Future hasn't finished yet, return a placeholder
-                      return Text('Loading');
+                      return Center(child: Image.asset('images/image$randomImageGenerator.gif',height: 500, width: 300,));
                     }
                     // netWorking.listResponse= snapshot;
                     return Padding(
@@ -66,7 +72,6 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
                               : netWorking.listResponseTopAnime.length,
                           itemBuilder: (context, index) {
                             return Container(
-                              padding: EdgeInsets.all(10.0),
                               decoration: BoxDecoration(
                                 image: DecorationImage(
                                   fit: BoxFit.fill,
@@ -75,23 +80,6 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
                                         ['jpg']['image_url'],
                                   ),
                                 ),
-                                gradient: LinearGradient(
-                                    begin: FractionalOffset.topLeft,
-                                    end: FractionalOffset.bottomRight,
-                                    colors: [
-                                      Color(0xff3F3351).withOpacity(1),
-                                      Color(0xff864879).withOpacity(0.7),
-                                      Color(0xff864879).withOpacity(0.5),
-                                      Color(0xff864879).withOpacity(0.3),
-                                      Color(0xff864879).withOpacity(0.0),
-                                    ],
-                                    stops: const [
-                                      0.0,
-                                      0.25,
-                                      0.5,
-                                      0.75,
-                                      1.0
-                                    ]),
                                 borderRadius: const BorderRadius.all(
                                   Radius.circular(5.0),
                                 ),

@@ -35,6 +35,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   http: ^0.13.4
+  chewie: ^1.3.0
 
 dev_dependencies:
   flutter_test:
@@ -51,3 +52,6 @@ flutter:
     - family: Asap
       fonts:
         - asset: fonts/Asap-SemiBold.ttf
+
+  assets:
+    - images/

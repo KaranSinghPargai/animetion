@@ -1,3 +1,4 @@
+import 'package:animetion/Screens/video_player_screen.dart';
 import 'package:animetion/networking.dart';
 import 'package:flutter/material.dart';
 
@@ -14,13 +15,13 @@ class _AnimeInfoPageState extends State<AnimeInfoPage> {
   Networking networking = Networking();
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return Container(
+      child: Scaffold(
         backgroundColor: Color(0xff3F3351).withOpacity(0.8),
         appBar: AppBar(
-          backgroundColor: Color(0xff3F3351),
+          backgroundColor: Color(0xff3F3351,),
           title: Center(
-            child: Text('Animetion'),
+            child: Text('ANIMETION',style: TextStyle(fontFamily: 'Asap'),),
           ),
         ),
         body: Padding(
@@ -160,20 +161,33 @@ class _AnimeInfoPageState extends State<AnimeInfoPage> {
                                 print(networking.listResponse.length);
                                 return Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: ListTile(leading: Text(
-                                    'Episode' +
-                                        networking.listResponse[index]['mal_id']
-                                            .toString(),
-                                    style: TextStyle(
-                                      color:Color(0xffE9A6A6),
-                                      fontSize: 16,
-                                      fontFamily: 'Asap',
+                                  child: ListTile(
+                                    leading: Text(
+                                      'Episode' +
+                                          networking.listResponse[index]
+                                                  ['mal_id']
+                                              .toString(),
+                                      style: TextStyle(
+                                        color: Color(0xffE9A6A6),
+                                        fontSize: 16,
+                                        fontFamily: 'Asap',
+                                      ),
+                                    ),
+                                    trailing: GestureDetector(
+                                      onTap: (){
+                                        String vidURL= networking.listResponse[index]['url'];
+                                        Navigator.push(context, MaterialPageRoute(builder:(context){
+                                          return VideoPlayerScreen(vidURL);
+                                        }));
+                                        print(vidURL);
+                                      },
+                                      child: Icon(
+                                        Icons.play_arrow_rounded,
+                                        size: 20.0,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
-                                  trailing: GestureDetector(
-                                    child: Icon(Icons.play_arrow_rounded,size: 20.0, color: Colors.white,),
-                                  ),
-                                  )
                                 );
                               }),
                         );
@@ -187,14 +201,3 @@ class _AnimeInfoPageState extends State<AnimeInfoPage> {
     );
   }
 }
-// Expanded(
-// child: FutureBuilder(
-// future: networking.jikanApiCallGetAnimeVideos(
-// widget.listResponse[widget.animeIDIndex]['mal_id']),
-// builder: (context, snapshots) {
-// if (snapshots.data == null) {
-// return Text('loading');
-// }
-// print(snapshots.data);
-// return Text(snapshots.data.toString());
-// }),

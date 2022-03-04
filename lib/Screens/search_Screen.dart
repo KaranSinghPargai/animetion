@@ -20,12 +20,11 @@ class _SearchScreenState extends State<SearchScreen> {
       isLoading = false;
     });
   }
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        backgroundColor: Color(0xff3F3351),
+    return Container(
+      child: Scaffold(
+        backgroundColor: Color(0xff3F3351).withOpacity(0.8),
         body: Padding(
           padding: const EdgeInsets.only(
               top: 30.0, left: 10.0, bottom: 10.0, right: 10.0),
@@ -66,7 +65,7 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
               Expanded(
                 child: isLoading
-                    ? Text("Loading")
+                    ? Center(child: Container(child: Icon(Icons.hourglass_bottom_outlined,size: 400,),))
                     : GridView.builder(
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
