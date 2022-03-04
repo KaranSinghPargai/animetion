@@ -150,11 +150,11 @@ class _AnimeInfoPageState extends State<AnimeInfoPage> {
                           widget.listResponse[widget.animeIDIndex]['mal_id']),
                       builder: (context, snapshots) {
                         if (snapshots.data == null) {
-                          return Text('loading');
+                          return Icon(Icons.hourglass_bottom_outlined,size: 50,color:Color(0xffE9A6A6) ,);
                         }
                         print(snapshots.data);
                         return SizedBox(
-                          height: 400,
+                          height: networking.listResponse.length==0?0:400,
                           child: ListView.builder(
                               itemCount: networking.listResponse.length,
                               itemBuilder: (context, index) {
@@ -163,7 +163,7 @@ class _AnimeInfoPageState extends State<AnimeInfoPage> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: ListTile(
                                     leading: Text(
-                                      'Episode' +
+                                      'Episode'+' '+
                                           networking.listResponse[index]
                                                   ['mal_id']
                                               .toString(),

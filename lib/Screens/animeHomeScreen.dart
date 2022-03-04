@@ -24,7 +24,6 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
       home: Scaffold(
         backgroundColor: Color(0xff3F3351).withOpacity(0.8),
         appBar: AppBar(
-          automaticallyImplyLeading: true,
           backgroundColor: Color(0xff3F3351),
           title: Center(
             child: Text(
