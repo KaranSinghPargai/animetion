@@ -39,7 +39,6 @@ class _SearchScreenState extends State<SearchScreen> {
                 cursorColor: Color(0xffE9A6A6),
                 onSubmitted: (newVal) {
                   initiateSearch(newVal);
-                  print(networking.listResponseSearchAnime);
                 },
                 decoration: const InputDecoration(
                   focusedBorder: OutlineInputBorder(

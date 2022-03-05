@@ -106,5 +106,3 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
   }
 }
 
-//netWorking.listResponse[index]['images']['jpg']
-//                               ['image_url'],
