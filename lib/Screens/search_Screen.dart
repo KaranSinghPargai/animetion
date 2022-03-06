@@ -22,16 +22,27 @@ class _SearchScreenState extends State<SearchScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Scaffold(
-        backgroundColor: Color(0xff3F3351).withOpacity(0.8),
-        body: Padding(
-          padding: const EdgeInsets.only(
-              top: 30.0, left: 10.0, bottom: 10.0, right: 10.0),
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: FractionalOffset.topCenter,
+            end: FractionalOffset.bottomCenter,
+            colors: [
+              Color(0xff3A1C71).withOpacity(0.8),
+              Color(0xff3A1C71).withOpacity(0.4),
+              Color(0xffD76D77).withOpacity(0.4),
+              Color(0xffD76D77).withOpacity(0.3),
+              Color(0xffFFAF7B).withOpacity(0.3),
+            ],
+            stops: const [0.0,0.25,0.5,0.75,1.0],
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 30.0, left: 10.0,right: 10.0,bottom: 5.0),
           child: Column(
             children: [
               TextField(
-                autofocus: true,
                 style: const TextStyle(
                   color: Color(0xffE9A6A6),
                   fontFamily: 'Asap',
@@ -50,7 +61,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     ),
                   ),
                   hintStyle:
-                      TextStyle(color: Color(0xffE9A6A6), fontFamily: 'Asap'),
+                      TextStyle(color: Color(0xff0B354F), fontFamily: 'Asap'),
                   hintText: 'Search Anime Here',
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
