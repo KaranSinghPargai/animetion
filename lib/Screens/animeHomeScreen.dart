@@ -67,7 +67,7 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
                         // Future hasn't finished yet, return a placeholder
-                        return Center(child: Image.asset('images/image$randomImageGenerator.gif',height: 500, width: 300,));
+                        return Center(child: Image.asset('images/image$randomImageGenerator.gif',height: 200,width: 200,));
                       }
                       // netWorking.listResponse= snapshot;
                       return Padding(
