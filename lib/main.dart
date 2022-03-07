@@ -1,4 +1,5 @@
 import 'package:animetion/Screens/animeHomeScreen.dart';
+import 'package:animetion/Screens/no_Internet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io';
@@ -40,31 +41,7 @@ class _AnimetionState extends State<Animetion> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: _isConnected? AnimeHomeScreen(): Scaffold(
-        body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: FractionalOffset.topCenter,
-              end: FractionalOffset.bottomCenter,
-              colors: [
-                Color(0xff3A1C71).withOpacity(0.8),
-                Color(0xff3A1C71).withOpacity(0.4),
-                Color(0xffD76D77).withOpacity(0.4),
-                Color(0xffD76D77).withOpacity(0.3),
-                Color(0xffFFAF7B).withOpacity(0.3),
-              ],
-              stops: const [0.0,0.25,0.5,0.75,1.0],
-            ),
-          ),
-          child: Center(
-            child: Text('No Internet Access',style: TextStyle(
-              color: Color(0xff0B354F),
-              fontSize: 40,
-              fontWeight: FontWeight.bold,
-            ),),
-          ),
-        ),
-      ),
+      home: _isConnected? AnimeHomeScreen(): NoInternet(),
     );
   }
 }

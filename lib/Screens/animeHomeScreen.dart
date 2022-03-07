@@ -75,7 +75,7 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
                         child: GridView.builder(
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
-                              childAspectRatio: 0.7,
+                              childAspectRatio: 0.75,
                               crossAxisCount: 2,
                               crossAxisSpacing: 10.0,
                               mainAxisSpacing: 10.0,

@@ -79,7 +79,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     : GridView.builder(
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
-                          childAspectRatio: 0.7,
+                          childAspectRatio: 0.75,
                           crossAxisCount: 2,
                           crossAxisSpacing: 5.0,
                           mainAxisSpacing: 5.0,
@@ -103,8 +103,6 @@ class _SearchScreenState extends State<SearchScreen> {
                             child: GestureDetector(
                               onTap: () {
                                 setState(() {
-                                  animeID = networking
-                                      .listResponseSearchAnime[index]['mal_id'];
                                   Navigator.push(context,
                                       MaterialPageRoute(builder: (context) {
                                     return AnimeInfoPage(
