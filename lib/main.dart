@@ -1,8 +1,8 @@
-import 'package:animetion/Screens/animeHomeScreen.dart';
-import 'package:animetion/Screens/no_Internet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io';
+import 'package:animetion/Screens/loading_screen.dart';
+
 void main() {
   runApp(Animetion());
 }
@@ -11,7 +11,7 @@ class Animetion extends StatefulWidget {
   State<Animetion> createState() => _AnimetionState();
 }
 
-class _AnimetionState extends State<Animetion> {
+class _AnimetionState extends State<Animetion>with SingleTickerProviderStateMixin{
 
   bool _isConnected= true;
 
@@ -41,7 +41,7 @@ class _AnimetionState extends State<Animetion> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: _isConnected? AnimeHomeScreen(): NoInternet(),
+      home: LoadingScreen(isConnected: _isConnected),
     );
   }
 }

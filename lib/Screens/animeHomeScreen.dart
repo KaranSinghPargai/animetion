@@ -23,6 +23,7 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
     return Container(
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           backgroundColor: Color(0xff3A1C71),
           title: Center(
             child: Text(
@@ -84,29 +85,32 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
                                 ? 0
                                 : netWorking.listResponseTopAnime.length,
                             itemBuilder: (context, index) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    fit: BoxFit.fill,
-                                    image: NetworkImage(
-                                      netWorking.listResponseTopAnime[index]['images']
-                                          ['jpg']['image_url'],
+                              return Hero(
+                                tag: 'poster$index',
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      fit: BoxFit.fill,
+                                      image: NetworkImage(
+                                        netWorking.listResponseTopAnime[index]['images']
+                                            ['jpg']['image_url'],
+                                      ),
+                                    ),
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.circular(5.0),
                                     ),
                                   ),
-                                  borderRadius: const BorderRadius.all(
-                                    Radius.circular(5.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        Navigator.push(context,
+                                            MaterialPageRoute(builder: (context) {
+                                          return AnimeInfoPage(
+                                              netWorking.listResponseTopAnime, index);
+                                        }));
+                                      });
+                                    },
                                   ),
-                                ),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      Navigator.push(context,
-                                          MaterialPageRoute(builder: (context) {
-                                        return AnimeInfoPage(
-                                            netWorking.listResponseTopAnime, index);
-                                      }));
-                                    });
-                                  },
                                 ),
                               );
                             }),

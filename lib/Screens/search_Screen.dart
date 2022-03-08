@@ -88,29 +88,32 @@ class _SearchScreenState extends State<SearchScreen> {
                             ? 0
                             : networking.listResponseSearchAnime.length,
                         itemBuilder: (context, index) {
-                          return Container(
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                fit: BoxFit.fill,
-                                image: NetworkImage(
-                                    networking.listResponseSearchAnime[index]
-                                        ['images']['jpg']['image_url']),
+                          return Hero(
+                            tag: 'poster$index',
+                            child: Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: NetworkImage(
+                                      networking.listResponseSearchAnime[index]
+                                          ['images']['jpg']['image_url']),
+                                ),
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(20.0),
+                                ),
                               ),
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(20.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) {
+                                      return AnimeInfoPage(
+                                          networking.listResponseSearchAnime,
+                                          index);
+                                    }));
+                                  });
+                                },
                               ),
-                            ),
-                            child: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) {
-                                    return AnimeInfoPage(
-                                        networking.listResponseSearchAnime,
-                                        index);
-                                  }));
-                                });
-                              },
                             ),
                           );
                         }),

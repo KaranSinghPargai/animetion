@@ -51,20 +51,23 @@ class _AnimeInfoPageState extends State<AnimeInfoPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Container(
-                        height: 285,
-                        width: 200,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image: NetworkImage(
-                              widget.listResponse[widget.animeIDIndex]
-                                  ['images']['jpg']['image_url'],
+                      Hero(
+                        tag: 'poster${widget.animeIDIndex}',
+                        child: Container(
+                          height: 285,
+                          width: 200,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              fit: BoxFit.fill,
+                              image: NetworkImage(
+                                widget.listResponse[widget.animeIDIndex]
+                                    ['images']['jpg']['image_url'],
+                              ),
                             ),
-                          ),
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(5.0),
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(5.0),
+                            ),
                           ),
                         ),
                       ),
