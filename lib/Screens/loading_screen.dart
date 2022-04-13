@@ -1,3 +1,4 @@
+import 'package:animetion/utilities/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:animetion/Screens/animeHomeScreen.dart';
 import 'package:animetion/Screens/no_Internet.dart';
@@ -16,18 +17,12 @@ class LoadingScreen extends StatelessWidget {
     return  Scaffold(
         body: Container(
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: FractionalOffset.topCenter,
-              end: FractionalOffset.bottomCenter,
-              colors: [
-                Color(0xff3A1C71).withOpacity(0.8),
-                Color(0xff3A1C71).withOpacity(0.4),
-                Color(0xffD76D77).withOpacity(0.4),
-                Color(0xffD76D77).withOpacity(0.3),
-                Color(0xffFFAF7B).withOpacity(0.3),
-              ],
-              stops: const [0.0, 0.25, 0.5, 0.75, 1.0],
+            image: DecorationImage(
+              fit: BoxFit.fill,
+              opacity: 0.1,
+              image: AssetImage('images/loading_Wallpaper.jpg')
             ),
+            color: primary_color
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -40,8 +35,8 @@ class LoadingScreen extends StatelessWidget {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
-                    children: const [
-                      Text('ANIME',style: TextStyle(color: Color(0xff0B354F),
+                    children:  [
+                      Text('ANIME',style: TextStyle(color: secondary_color,
                       fontSize: 30.0,
                         fontWeight: FontWeight.bold,
                       ),),
@@ -58,7 +53,7 @@ class LoadingScreen extends StatelessWidget {
                           }));
                         },
                         animatedTexts: [
-                          TyperAnimatedText('tion',textStyle: TextStyle(color: Color(0xff0B354F),
+                          TyperAnimatedText('tion',textStyle: TextStyle(color: secondary_color,
                             fontSize: 30.0,
                             fontWeight: FontWeight.bold,
                           ),

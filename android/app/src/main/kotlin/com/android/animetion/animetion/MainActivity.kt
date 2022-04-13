@@ -1,4 +1,4 @@
-package com.android.animetion.animetion
+package com.android.animetion
 
 import io.flutter.embedding.android.FlutterActivity
 

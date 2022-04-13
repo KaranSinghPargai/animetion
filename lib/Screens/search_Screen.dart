@@ -1,5 +1,8 @@
 import 'package:animetion/Screens/animeInfoPage.dart';
 import 'package:animetion/networking.dart';
+import 'package:animetion/utilities/constants.dart';
+import 'package:animetion/widgets/addSpace.dart';
+import 'package:animetion/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -8,10 +11,9 @@ class SearchScreen extends StatefulWidget {
 }
 
 Networking networking = Networking();
-int animeID = 0;
 
 class _SearchScreenState extends State<SearchScreen> {
-  bool isLoading = false;
+  bool isLoading = true;
 
   void initiateSearch(String search) async {
     isLoading = true;
@@ -20,106 +22,162 @@ class _SearchScreenState extends State<SearchScreen> {
       isLoading = false;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: primary_color,
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: FractionalOffset.topCenter,
-            end: FractionalOffset.bottomCenter,
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
             colors: [
-              Color(0xff3A1C71).withOpacity(0.8),
-              Color(0xff3A1C71).withOpacity(0.4),
-              Color(0xffD76D77).withOpacity(0.4),
-              Color(0xffD76D77).withOpacity(0.3),
-              Color(0xffFFAF7B).withOpacity(0.3),
+              accent_Color,
+              primary_color,
             ],
-            stops: const [0.0,0.25,0.5,0.75,1.0],
+            stops: const [0.3, 0.5],
           ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.only(top: 30.0, left: 10.0,right: 10.0,bottom: 5.0),
-          child: Column(
-            children: [
-              TextField(
-                style: const TextStyle(
-                  color: Color(0xffE9A6A6),
-                  fontFamily: 'Asap',
-                ),
-                cursorColor: Color(0xffE9A6A6),
-                onSubmitted: (newVal) {
-                  initiateSearch(newVal);
-                },
-                decoration: const InputDecoration(
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(20.0),
+        child: ListView(
+          children: [
+            Container(
+              padding: EdgeInsets.only(top: height(context)*0.02, left: width(context)*0.02,right: width(context)*0.02),
+                height: height(context)*0.4,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    color: accent_Color,
+                    borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(50.0),
+                        bottomLeft: Radius.circular(50.0))),
+                child: Column(
+                  children: [
+                    CustomText(
+                        text: 'Search anime you want',
+                        color: secondary_color,
+                        size: 25.0),
+                    AddVerticalSpace(
+                      height(context) * 0.03,
                     ),
-                    borderSide: BorderSide(
-                      color: Color(0xffE9A6A6),
-                    ),
-                  ),
-                  hintStyle:
-                      TextStyle(color: Color(0xff0B354F), fontFamily: 'Asap'),
-                  hintText: 'Search Anime Here',
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Color(0xffE9A6A6),
-                    ),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(20.0),
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: isLoading
-                    ? Center(child: Container(child: Icon(Icons.hourglass_bottom_outlined,size: 400,),))
-                    : GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          childAspectRatio: 0.75,
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 5.0,
-                          mainAxisSpacing: 5.0,
+                    TextField(
+                      style: TextStyle(
+                        color: secondary_color,
+                        fontFamily: 'Asap',
+                      ),
+                      cursorColor: Color(0xffE9A6A6),
+                      onSubmitted: (newVal) {
+                        initiateSearch(newVal);
+                      },
+                      decoration: InputDecoration(
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(20.0),
+                          ),
+                          borderSide: BorderSide(
+                            color: secondary_color,
+                          ),
                         ),
-                        itemCount: networking.listResponseSearchAnime.isEmpty
-                            ? 0
-                            : networking.listResponseSearchAnime.length,
-                        itemBuilder: (context, index) {
-                          return Hero(
-                            tag: 'poster$index',
-                            child: Container(
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image: NetworkImage(
-                                      networking.listResponseSearchAnime[index]
-                                          ['images']['jpg']['image_url']),
+                        hintStyle:
+                        TextStyle(color: Color(0xff0B354F), fontFamily: 'Asap'),
+                        label: CustomText(
+                          text: 'Anime',
+                          size: 20,
+                          color: secondary_color,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: secondary_color,
+                          ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(20.0),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),),
+            AddVerticalSpace(
+              height(context) * 0.03,
+            ),
+            isLoading
+                ? Center(child: Image(width: 200,height: 200, image: AssetImage('images/search.gif',),),)
+                : Padding(
+                  padding: EdgeInsets.symmetric(horizontal: width(context)*0.02),
+                  child: GridView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+                      gridDelegate:
+                          SliverGridDelegateWithFixedCrossAxisCount(
+                        childAspectRatio: 0.75,
+                        crossAxisCount: networking.listResponseSearchAnime.isEmpty?1:2,
+                        crossAxisSpacing: 5.0,
+                        mainAxisSpacing: 5.0,
+                      ),
+                      itemCount: networking.listResponseSearchAnime.isEmpty
+                          ? 1
+                          : networking.listResponseSearchAnime.length,
+                      itemBuilder: (context, index) {
+                        if(networking.listResponseSearchAnime.isEmpty){
+                          return CustomText(text: 'No results found, try with another keywords',size: 25.0,color: secondary_color,);
+                        }
+                        else{
+                        return Hero(
+                          tag: 'poster$index',
+                          child: Stack(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: NetworkImage(
+                                        networking.listResponseSearchAnime[index]
+                                            ['images']['jpg']['image_url']),
+                                  ),
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(20.0),
+                                  ),
                                 ),
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(20.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      Navigator.push(context,
+                                          MaterialPageRoute(builder: (context) {
+                                        return AnimeInfoPage(
+                                            networking.listResponseSearchAnime,
+                                            index);
+                                      }));
+                                    });
+                                  },
                                 ),
                               ),
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    Navigator.push(context,
-                                        MaterialPageRoute(builder: (context) {
-                                      return AnimeInfoPage(
-                                          networking.listResponseSearchAnime,
-                                          index);
-                                    }));
-                                  });
-                                },
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 5.0),
+                                child: Align(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Container(
+                                    padding: EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                      color: primary_color.withOpacity(0.5),
+                                      borderRadius: BorderRadius.only(
+                                        topRight: Radius.circular(5.0),
+                                        bottomRight: Radius.circular(
+                                          5.0,
+                                        ),
+                                      ),
+                                    ),
+                                    child: CustomText(
+                                      text: networking.listResponseSearchAnime[index]['title'].toString(),
+                                      size: 18.0,
+                                      color: secondary_color,
+                                    ),
+                                  ),),
                               ),
-                            ),
-                          );
-                        }),
-              ),
-            ],
-          ),
+                            ],
+                          ),
+                        );}
+                      }),
+                ),
+          ],
         ),
       ),
     );

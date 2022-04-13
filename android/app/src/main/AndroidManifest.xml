@@ -1,8 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.animetion.animetion">
+    package="com.android.animetion">
     <uses-permission android:name="android.permission.INTERNET" />
+    <queries>
+        <!-- If your app opens https URLs -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
    <application
-        android:label="animetion"
+        android:label="Animetion"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

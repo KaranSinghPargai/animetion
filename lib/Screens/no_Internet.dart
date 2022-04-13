@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:animetion/utilities/constants.dart';
 class NoInternet extends StatelessWidget {
   const NoInternet({Key? key}) : super(key: key);
 
@@ -6,26 +7,23 @@ class NoInternet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        padding: EdgeInsets.all(height(context)*0.09),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: FractionalOffset.topCenter,
-            end: FractionalOffset.bottomCenter,
-            colors: [
-              Color(0xff3A1C71).withOpacity(0.8),
-              Color(0xff3A1C71).withOpacity(0.4),
-              Color(0xffD76D77).withOpacity(0.4),
-              Color(0xffD76D77).withOpacity(0.3),
-              Color(0xffFFAF7B).withOpacity(0.3),
-            ],
-            stops: const [0.0,0.25,0.5,0.75,1.0],
-          ),
+          color: primary_color,
         ),
-        child: Center(
-          child: Text('No Internet Access',style: TextStyle(
-            color: Color(0xff0B354F),
-            fontSize: 40,
-            fontWeight: FontWeight.bold,
-          ),),
+        child: Column(
+          children: [
+            Image.asset('images/crying.png',height: height(context)*0.5,width: width(context)*0.5,),
+            Center(
+              child: Text('Please check your internet and try again',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: secondary_color,
+                    fontFamily: 'Asap',
+                    fontSize: 25.0,
+                  ))
+            ),
+          ],
         ),
       ),
     );

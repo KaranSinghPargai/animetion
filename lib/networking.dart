@@ -9,6 +9,8 @@ class Networking{
   Map mapResponseSearchAnime={};
   List listResponseTopAnime=[];
   List listResponseSearchAnime=[];
+  Map mapResponseTopCharacters={};
+  List listResponseTopCharacters=[];
 
   Future jikanApiCallSearchedAnime(String searchAnime) async {
     http.Response apiResponse;
@@ -31,4 +33,16 @@ class Networking{
     }
     return listResponseTopAnime;
   }
+
+  Future jikanApiCallTopCharacters()async{
+    http.Response apiResponse;
+    apiResponse =await http.get(Uri.parse('$jikanApiURL/top/characters'));
+    if(apiResponse.statusCode==200){
+      mapResponseTopCharacters= json.decode(apiResponse.body);
+      listResponseTopCharacters = mapResponseTopCharacters['data'];
+      listResponse=listResponseTopCharacters;
+    }
+    return listResponseTopCharacters;
+  }
+
 }
