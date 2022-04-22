@@ -3,8 +3,6 @@ import 'dart:convert';
 
 class Networking{
   String jikanApiURL = 'https://api.jikan.moe/v4';
-  Map mapResponse={};
-  List listResponse=[];
   Map mapResponseTopAnime={};
   Map mapResponseSearchAnime={};
   List listResponseTopAnime=[];
@@ -14,35 +12,34 @@ class Networking{
 
   Future jikanApiCallSearchedAnime(String searchAnime) async {
     http.Response apiResponse;
+    print('search called');
     apiResponse = await http.get(Uri.parse('$jikanApiURL/anime?q=$searchAnime'));
     if (apiResponse.statusCode == 200) {
         mapResponseSearchAnime = json.decode(apiResponse.body);
         listResponseSearchAnime = mapResponseSearchAnime['data'];
-        listResponse= listResponseSearchAnime;
     }
     return listResponseSearchAnime;
   }
 
   Future jikanApiCallTopAnime()async{
+    print('top called');
     http.Response apiResponse;
     apiResponse = await http.get(Uri.parse('$jikanApiURL/top/anime'));
     if(apiResponse.statusCode==200){
       mapResponseTopAnime= json.decode(apiResponse.body);
       listResponseTopAnime = mapResponseTopAnime['data'];
-      listResponse=listResponseTopAnime;
     }
     return listResponseTopAnime;
   }
 
   Future jikanApiCallTopCharacters()async{
+    print('top c called');
     http.Response apiResponse;
     apiResponse =await http.get(Uri.parse('$jikanApiURL/top/characters'));
     if(apiResponse.statusCode==200){
       mapResponseTopCharacters= json.decode(apiResponse.body);
       listResponseTopCharacters = mapResponseTopCharacters['data'];
-      listResponse=listResponseTopCharacters;
     }
     return listResponseTopCharacters;
   }
-
 }

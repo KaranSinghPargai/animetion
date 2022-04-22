@@ -2,21 +2,27 @@ import 'package:animetion/Screens/animeInfoPage.dart';
 import 'package:animetion/Screens/search_Screen.dart';
 import 'package:animetion/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
-import 'package:animetion/networking.dart';
+import 'package:animetion/services/networking.dart';
 import 'dart:math';
 import 'package:animetion/utilities/constants.dart';
 
 class AnimeHomeScreen extends StatefulWidget {
+  const AnimeHomeScreen({Key? key}) : super(key: key);
+
   @override
   _AnimeHomeScreenState createState() => _AnimeHomeScreenState();
 }
 
 class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
   Networking netWorking = Networking();
+  late Future topAnimeReference;
+  late Future topCharacterReference;
   int randomImageGenerator = 0;
   @override
   void initState() {
     randomImageGenerator = Random().nextInt(13);
+    topAnimeReference = netWorking.jikanApiCallTopAnime();
+    topCharacterReference = netWorking.jikanApiCallTopCharacters();
     super.initState();
   }
 
@@ -36,13 +42,13 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
             stops: const [0.3, 0.5],
           ),
         ),
-        child: ListView(physics: ClampingScrollPhysics(), children: [
+        child: ListView(physics: const ClampingScrollPhysics(), children: [
           Container(
             height: height(context) * 0.4,
             width: double.infinity,
             decoration: BoxDecoration(
                 color: accent_Color,
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                     bottomRight: Radius.circular(50.0),
                     bottomLeft: Radius.circular(50.0))),
             child: Column(
@@ -50,10 +56,15 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
               children: [
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                   CustomText(
-                        text: 'Animetion', color: secondary_color, size: 30.0),
+                    Padding(
+                      padding: EdgeInsets.only(left: width(context) * 0.05),
+                      child: CustomText(
+                          text: 'Animetion',
+                          color: secondary_color,
+                          size: 30.0),
+                    ),
                     TextButton(
                       child: Icon(
                         Icons.search,
@@ -75,81 +86,98 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
                       color: secondary_color.withOpacity(0.7),
                       size: 20.0),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 5.0,
                 ),
-                Flexible(
-                  fit: FlexFit.tight,
+                Expanded(
                   child: Padding(
                     padding: EdgeInsets.only(
                         left: height(context) * 0.03,
                         right: height(context) * 0.03,
                         bottom: height(context) * 0.05),
-                    child: FutureBuilder(
-                        future: netWorking.jikanApiCallTopCharacters(),
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData) {
-                            return Center(
-                              child: CircularProgressIndicator(
-                                color: secondary_color,
-                              ),
-                            );
-                          }
-                          return GridView.builder(
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                childAspectRatio: 1.45,
-                                crossAxisCount: 1,
-                                crossAxisSpacing: 10.0,
-                                mainAxisSpacing: 10.0,
-                              ),
-                              scrollDirection: Axis.horizontal,
-                              shrinkWrap: true,
-                              physics: BouncingScrollPhysics(),
-                              itemCount:
-                                  netWorking.listResponseTopCharacters.length,
-                              itemBuilder: (context, index) {
-                                return Stack(children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.all(
-                                        Radius.circular(5.0),
-                                      ),
-                                      image: DecorationImage(
-                                        fit: BoxFit.fill,
-                                        image: NetworkImage(netWorking
-                                                    .listResponseTopCharacters[
-                                                index]['images']['jpg']
-                                            ['image_url']),
-                                      ),
-                                    ),
+                    child: Stack(
+                      children: [
+                        FutureBuilder(
+                            future: topCharacterReference,
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData) {
+                                return Center(
+                                  child: CircularProgressIndicator(
+                                    color: secondary_color,
                                   ),
-                                  Align(
-                                    alignment: Alignment.bottomLeft,
-                                    child: Container(
-                                      padding: const EdgeInsets.all(5),
-                                      decoration: BoxDecoration(
-                                        color:
-                                        primary_color.withOpacity(0.5),
-                                        borderRadius: const BorderRadius.only(
-                                          topRight: Radius.circular(5.0),
-                                          bottomRight: Radius.circular(
-                                            5.0,
+                                );
+                              }
+                              return GridView.builder(
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                    childAspectRatio: 1.45,
+                                    crossAxisCount: 1,
+                                    crossAxisSpacing: 10.0,
+                                    mainAxisSpacing: 10.0,
+                                  ),
+                                  scrollDirection: Axis.horizontal,
+                                  shrinkWrap: true,
+                                  physics: const BouncingScrollPhysics(),
+                                  itemCount: netWorking
+                                      .listResponseTopCharacters.length,
+                                  itemBuilder: (context, index) {
+                                    return Stack(children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: const BorderRadius.all(
+                                            Radius.circular(5.0),
+                                          ),
+                                          image: DecorationImage(
+                                            fit: BoxFit.fill,
+                                            image: NetworkImage(netWorking
+                                                        .listResponseTopCharacters[
+                                                    index]['images']['jpg']
+                                                ['image_url']),
                                           ),
                                         ),
                                       ),
-                                      child: CustomText(
-                                        text: netWorking
-                                            .listResponseTopCharacters[
-                                        index]['name'],
-                                        size: 18.0,
-                                        color: secondary_color,
+                                      Align(
+                                        alignment: Alignment.bottomLeft,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                            color:
+                                                primary_color.withOpacity(0.5),
+                                            borderRadius:
+                                                const BorderRadius.only(
+                                                  bottomLeft: Radius.circular(5.0),
+                                              topRight: Radius.circular(5.0),
+                                              bottomRight: Radius.circular(
+                                                5.0,
+                                              ),
+                                            ),
+                                          ),
+                                          child: CustomText(
+                                            text: netWorking
+                                                    .listResponseTopCharacters[
+                                                index]['name'],
+                                            size: 18.0,
+                                            color: secondary_color,
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ]);
-                              });
-                        }),
+                                    ]);
+                                  });
+                            }),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Material(
+                            color: secondary_color.withOpacity(0.8),
+                            borderRadius: const BorderRadius.all(Radius.circular(50.0)),
+                            elevation: 5.0,
+                            child: Icon(
+                              Icons.arrow_forward,
+                              color: accent_Color,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -166,7 +194,7 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: FutureBuilder(
-                future: netWorking.jikanApiCallTopAnime(),
+                future: topAnimeReference,
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return Center(
@@ -178,8 +206,8 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
                   }
                   return GridView.builder(
                       shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         childAspectRatio: 0.75,
                         crossAxisCount: 2,
                         crossAxisSpacing: 10.0,
@@ -205,28 +233,28 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
                                   Radius.circular(5.0),
                                 ),
                               ),
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    Navigator.push(context,
-                                        MaterialPageRoute(builder: (context) {
-                                      return AnimeInfoPage(
-                                          netWorking.listResponseTopAnime,
-                                          index);
-                                    }));
-                                  });
-                                },
-                              ),
+                              // child: GestureDetector(
+                              //   onTap: () {
+                              //     setState(() {
+                              //       Navigator.push(context,
+                              //           MaterialPageRoute(builder: (context) {
+                              //         return AnimeInfoPage(
+                              //             netWorking.listResponseTopAnime,
+                              //             index);
+                              //       }));
+                              //     });
+                              //   },
+                              // ),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(bottom: 5.0),
                               child: Align(
                                 alignment: Alignment.bottomLeft,
                                 child: Container(
-                                  padding: EdgeInsets.all(5),
+                                  padding: const EdgeInsets.all(5),
                                   decoration: BoxDecoration(
                                     color: primary_color.withOpacity(0.5),
-                                    borderRadius: BorderRadius.only(
+                                    borderRadius: const BorderRadius.only(
                                       topRight: Radius.circular(5.0),
                                       bottomRight: Radius.circular(
                                         5.0,
@@ -242,6 +270,18 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
                                   ),
                                 ),
                               ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                        return AnimeInfoPage(
+                                            netWorking.listResponseTopAnime,
+                                            index);
+                                      }));
+                                });
+                              },
                             ),
                           ]),
                         );

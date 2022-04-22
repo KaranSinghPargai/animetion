@@ -1,5 +1,5 @@
 import 'package:animetion/Screens/animeInfoPage.dart';
-import 'package:animetion/networking.dart';
+import 'package:animetion/services/networking.dart';
 import 'package:animetion/utilities/constants.dart';
 import 'package:animetion/widgets/addSpace.dart';
 import 'package:animetion/widgets/custom_text.dart';

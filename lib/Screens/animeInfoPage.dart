@@ -1,5 +1,5 @@
 import 'package:url_launcher/url_launcher.dart';
-import 'package:animetion/networking.dart';
+import 'package:animetion/services/networking.dart';
 import 'package:animetion/utilities/constants.dart';
 import 'package:animetion/widgets/addSpace.dart';
 import 'package:animetion/widgets/custom_text.dart';
@@ -51,7 +51,7 @@ class _AnimeInfoPageState extends State<AnimeInfoPage> {
                       Hero(
                         tag: 'poster${widget.animeIDIndex}',
                         child: Container(
-                          height: 300,
+                          height: 270,
                           width: 200,
                           decoration: BoxDecoration(
                             image: DecorationImage(
