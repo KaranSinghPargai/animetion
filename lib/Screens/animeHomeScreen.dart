@@ -73,7 +73,7 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
                       onPressed: () {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
-                          return SearchScreen();
+                          return const SearchScreen();
                         }));
                       },
                     ),
@@ -233,40 +233,30 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
                                   Radius.circular(5.0),
                                 ),
                               ),
-                              // child: GestureDetector(
-                              //   onTap: () {
-                              //     setState(() {
-                              //       Navigator.push(context,
-                              //           MaterialPageRoute(builder: (context) {
-                              //         return AnimeInfoPage(
-                              //             netWorking.listResponseTopAnime,
-                              //             index);
-                              //       }));
-                              //     });
-                              //   },
-                              // ),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(bottom: 5.0),
                               child: Align(
                                 alignment: Alignment.bottomLeft,
-                                child: Container(
-                                  padding: const EdgeInsets.all(5),
-                                  decoration: BoxDecoration(
-                                    color: primary_color.withOpacity(0.5),
-                                    borderRadius: const BorderRadius.only(
-                                      topRight: Radius.circular(5.0),
-                                      bottomRight: Radius.circular(
-                                        5.0,
+                                child: Material(
+                                  color: primary_color.withOpacity(0.5),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(5),
+                                    decoration: const BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                        topRight: Radius.circular(10.0),
+                                        bottomRight: Radius.circular(
+                                          5.0
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  child: CustomText(
-                                    text: netWorking.listResponseTopAnime[index]
-                                            ['title']
-                                        .toString(),
-                                    size: 18.0,
-                                    color: secondary_color,
+                                    child: CustomText(
+                                      text: netWorking.listResponseTopAnime[index]
+                                              ['title']
+                                          .toString(),
+                                      size: 18.0,
+                                      color: secondary_color,
+                                    ),
                                   ),
                                 ),
                               ),

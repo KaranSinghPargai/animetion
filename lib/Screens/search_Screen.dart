@@ -6,6 +6,8 @@ import 'package:animetion/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 
 class SearchScreen extends StatefulWidget {
+  const SearchScreen({Key? key}) : super(key: key);
+
   @override
   _SearchScreenState createState() => _SearchScreenState();
 }
@@ -21,6 +23,18 @@ class _SearchScreenState extends State<SearchScreen> {
     setState(() {
       isLoading = false;
     });
+  }
+  final fieldText = TextEditingController();
+
+  void clearText() {
+    fieldText.clear();
+  }
+  String userSearch='';
+  String searchText(String search){
+    setState(() {
+      userSearch=search;
+    });
+    return userSearch;
   }
 
   @override
@@ -47,7 +61,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 width: double.infinity,
                 decoration: BoxDecoration(
                     color: accent_Color,
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                         bottomRight: Radius.circular(50.0),
                         bottomLeft: Radius.circular(50.0))),
                 child: Column(
@@ -60,17 +74,20 @@ class _SearchScreenState extends State<SearchScreen> {
                       height(context) * 0.03,
                     ),
                     TextField(
+                      controller: fieldText,
                       style: TextStyle(
                         color: secondary_color,
                         fontFamily: 'Asap',
                       ),
-                      cursorColor: Color(0xffE9A6A6),
+                      cursorColor: secondary_color,
                       onSubmitted: (newVal) {
+                        searchText(newVal);
                         initiateSearch(newVal);
+                        clearText();
                       },
                       decoration: InputDecoration(
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
+                          borderRadius: const BorderRadius.all(
                             Radius.circular(20.0),
                           ),
                           borderSide: BorderSide(
@@ -78,7 +95,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                         ),
                         hintStyle:
-                        TextStyle(color: Color(0xff0B354F), fontFamily: 'Asap'),
+                        const TextStyle(color: Color(0xff0B354F), fontFamily: 'Asap'),
                         label: CustomText(
                           text: 'Anime',
                           size: 20,
@@ -88,24 +105,28 @@ class _SearchScreenState extends State<SearchScreen> {
                           borderSide: BorderSide(
                             color: secondary_color,
                           ),
-                          borderRadius: BorderRadius.all(
+                          borderRadius: const BorderRadius.all(
                             Radius.circular(20.0),
                           ),
                         ),
                       ),
                     ),
+                    const SizedBox(height: 20,),
+                   userSearch==''?Container():CustomText(text: 'You Searched For :', color: secondary_color, size: 15),
+                   const SizedBox(height: 10,),
+                    CustomText(text: userSearch, color: secondary_color, size: 18.0),
                   ],
                 ),),
             AddVerticalSpace(
               height(context) * 0.03,
             ),
             isLoading
-                ? Center(child: Image(width: 200,height: 200, image: AssetImage('images/search.gif',),),)
+                ? const Center(child: Image(width: 200,height: 200, image: AssetImage('images/search.gif',),),)
                 : Padding(
                   padding: EdgeInsets.symmetric(horizontal: width(context)*0.02),
                   child: GridView.builder(
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
                       gridDelegate:
                           SliverGridDelegateWithFixedCrossAxisCount(
                         childAspectRatio: 0.75,
@@ -134,43 +155,48 @@ class _SearchScreenState extends State<SearchScreen> {
                                             ['images']['jpg']['image_url']),
                                   ),
                                   borderRadius: const BorderRadius.all(
-                                    Radius.circular(20.0),
+                                    Radius.circular(5.0),
                                   ),
-                                ),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      Navigator.push(context,
-                                          MaterialPageRoute(builder: (context) {
-                                        return AnimeInfoPage(
-                                            networking.listResponseSearchAnime,
-                                            index);
-                                      }));
-                                    });
-                                  },
                                 ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 5.0),
                                 child: Align(
                                   alignment: Alignment.bottomLeft,
-                                  child: Container(
-                                    padding: EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                      color: primary_color.withOpacity(0.5),
-                                      borderRadius: BorderRadius.only(
-                                        topRight: Radius.circular(5.0),
-                                        bottomRight: Radius.circular(
-                                          5.0,
+                                  child: Material(
+                                    color: primary_color.withOpacity(0.5),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(5),
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.only(
+                                          topRight: Radius.circular(10.0),
+                                          bottomRight: Radius.circular(
+                                              5.0
+                                          ),
                                         ),
                                       ),
+                                      child: CustomText(
+                                        text: networking.listResponseSearchAnime[index]
+                                        ['title']
+                                            .toString(),
+                                        size: 18.0,
+                                        color: secondary_color,
+                                      ),
                                     ),
-                                    child: CustomText(
-                                      text: networking.listResponseSearchAnime[index]['title'].toString(),
-                                      size: 18.0,
-                                      color: secondary_color,
-                                    ),
-                                  ),),
+                                  ),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) {
+                                          return AnimeInfoPage(
+                                              networking.listResponseSearchAnime,
+                                              index);
+                                        }),);
+                                  });
+                                },
                               ),
                             ],
                           ),

@@ -49,7 +49,7 @@ class LoadingScreen extends StatelessWidget {
                       AnimatedTextKit(
                         onFinished: (){
                           Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context){
-                            return _isConnected? AnimeHomeScreen():NoInternet();
+                            return _isConnected? const AnimeHomeScreen():const NoInternet();
                           }));
                         },
                         animatedTexts: [
@@ -57,7 +57,7 @@ class LoadingScreen extends StatelessWidget {
                             fontSize: 30.0,
                             fontWeight: FontWeight.bold,
                           ),
-                          speed: Duration(milliseconds: 500),
+                          speed: const Duration(milliseconds: 500),
                           ),
                         ],
                         totalRepeatCount: 1,

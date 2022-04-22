@@ -12,7 +12,6 @@ class Networking{
 
   Future jikanApiCallSearchedAnime(String searchAnime) async {
     http.Response apiResponse;
-    print('search called');
     apiResponse = await http.get(Uri.parse('$jikanApiURL/anime?q=$searchAnime'));
     if (apiResponse.statusCode == 200) {
         mapResponseSearchAnime = json.decode(apiResponse.body);
@@ -22,7 +21,6 @@ class Networking{
   }
 
   Future jikanApiCallTopAnime()async{
-    print('top called');
     http.Response apiResponse;
     apiResponse = await http.get(Uri.parse('$jikanApiURL/top/anime'));
     if(apiResponse.statusCode==200){
@@ -33,7 +31,6 @@ class Networking{
   }
 
   Future jikanApiCallTopCharacters()async{
-    print('top c called');
     http.Response apiResponse;
     apiResponse =await http.get(Uri.parse('$jikanApiURL/top/characters'));
     if(apiResponse.statusCode==200){
