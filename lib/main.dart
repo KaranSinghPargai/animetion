@@ -2,18 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io';
 import 'package:animetion/Screens/loading_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(Animetion());
 }
+
 class Animetion extends StatefulWidget {
   @override
   State<Animetion> createState() => _AnimetionState();
 }
 
-class _AnimetionState extends State<Animetion>with SingleTickerProviderStateMixin{
-
-  bool _isConnected= true;
+class _AnimetionState extends State<Animetion>
+    with SingleTickerProviderStateMixin {
+  bool _isConnected = true;
 
   Future<void> _checkInternetConnection() async {
     try {
@@ -32,6 +34,7 @@ class _AnimetionState extends State<Animetion>with SingleTickerProviderStateMixi
       }
     }
   }
+
   @override
   void initState() {
     _checkInternetConnection();
@@ -41,6 +44,7 @@ class _AnimetionState extends State<Animetion>with SingleTickerProviderStateMixi
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(textTheme: GoogleFonts.firaSansTextTheme().apply()),
       home: LoadingScreen(isConnected: _isConnected),
     );
   }
