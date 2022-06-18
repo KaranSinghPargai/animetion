@@ -16,8 +16,15 @@ Networking networking = Networking();
 
 class _SearchScreenState extends State<SearchScreen> {
   bool isLoading = true;
-
+  int page = 2;
+  final ScrollController _scrollController = ScrollController();
+  bool showFAB = false;
+  bool hasMore = true;
+  String userSearch = '';
   void initiateSearch(String search) async {
+    if (page >= 3) {
+      page = 2;
+    }
     isLoading = true;
     await networking.jikanApiCallSearchedAnime(search);
     setState(() {
@@ -31,7 +38,6 @@ class _SearchScreenState extends State<SearchScreen> {
     fieldText.clear();
   }
 
-  String userSearch = '';
   String searchText(String search) {
     setState(() {
       userSearch = search;
@@ -40,7 +46,42 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   @override
+  void initState() {
+    _scrollController.addListener(() {
+      if (_scrollController.offset ==
+          _scrollController.position.maxScrollExtent) {
+        setState(() {
+          networking.jikanApiCallSearchedAnimeByPage(userSearch, page);
+          networking.searchAnimeResponse;
+          showFAB = true;
+          page++;
+          // if (networking.newItemForSearch.length <= 25) {
+          //   hasMore = false;
+          // }
+        });
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollUp() {
+    _scrollController.animateTo(
+      0,
+      duration: const Duration(seconds: 2),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: primary_color,
       body: Container(
@@ -56,13 +97,12 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         ),
         child: ListView(
+          controller: _scrollController,
           children: [
             Container(
               padding: EdgeInsets.only(
-                  top: height(context) * 0.02,
-                  left: width(context) * 0.02,
-                  right: width(context) * 0.02),
-              height: height(context) * 0.4,
+                  top: height * 0.02, left: width * 0.02, right: width * 0.02),
+              height: height * 0.4,
               width: double.infinity,
               decoration: BoxDecoration(
                   color: accent_Color,
@@ -76,7 +116,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       color: secondary_color,
                       size: 25.0),
                   AddVerticalSpace(
-                    height(context) * 0.03,
+                    height * 0.03,
                   ),
                   TextField(
                     controller: fieldText,
@@ -134,7 +174,7 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
             ),
             AddVerticalSpace(
-              height(context) * 0.03,
+              height * 0.03,
             ),
             isLoading
                 ? const Center(
@@ -147,32 +187,26 @@ class _SearchScreenState extends State<SearchScreen> {
                     ),
                   )
                 : Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: width(context) * 0.02),
+                    padding: EdgeInsets.symmetric(horizontal: width * 0.02),
                     child: GridView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           childAspectRatio: 0.6,
                           crossAxisCount:
-                              networking.listResponseSearchAnime.isEmpty
-                                  ? 1
-                                  : 2,
-                          crossAxisSpacing: 5.0,
+                              networking.searchAnimeResponse.isEmpty ? 1 : 2,
+                          crossAxisSpacing: 10.0,
                           mainAxisSpacing: 5.0,
                         ),
-                        itemCount: networking.listResponseSearchAnime.isEmpty
-                            ? 1
-                            : networking.listResponseSearchAnime.length,
+                        itemCount: networking.searchAnimeResponse.length + 1,
                         itemBuilder: (context, index) {
-                          if (networking.listResponseSearchAnime.isEmpty) {
+                          if (networking.searchAnimeResponse.isEmpty) {
                             return CustomText(
-                              text:
-                                  'No results found, try with another keywords',
-                              size: 25.0,
-                              color: secondary_color,
-                            );
-                          } else {
+                                text: 'No results found, try another keywords',
+                                color: secondary_color,
+                                size: 20);
+                          }
+                          if (index < networking.searchAnimeResponse.length) {
                             return Hero(
                               tag: 'poster$index',
                               child: GestureDetector(
@@ -182,7 +216,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                       context,
                                       MaterialPageRoute(builder: (context) {
                                         return AnimeInfoPage(
-                                            networking.listResponseSearchAnime,
+                                            networking.searchAnimeResponse,
                                             index);
                                       }),
                                     );
@@ -198,9 +232,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                           image: DecorationImage(
                                             fit: BoxFit.fill,
                                             image: NetworkImage(networking
-                                                        .listResponseSearchAnime[
-                                                    index]['images']['jpg']
-                                                ['image_url']),
+                                                    .searchAnimeResponse[index]
+                                                ['images']['jpg']['image_url']),
                                           ),
                                           borderRadius: const BorderRadius.all(
                                             Radius.circular(5.0),
@@ -214,7 +247,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                         color: Colors.transparent,
                                         child: CustomText(
                                           text: networking
-                                              .listResponseSearchAnime[index]
+                                              .searchAnimeResponse[index]
                                                   ['title']
                                               .toString(),
                                           size: 18.0,
@@ -226,6 +259,10 @@ class _SearchScreenState extends State<SearchScreen> {
                                 ),
                               ),
                             );
+                          } else {
+                            return hasMore
+                                ? Center(child: CircularProgressIndicator())
+                                : Text('End of results');
                           }
                         }),
                   ),

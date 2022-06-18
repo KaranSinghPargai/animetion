@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:animetion/services/networking.dart';
 import 'dart:math';
 import 'package:animetion/utilities/constants.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:animetion/widgets/topCharacterSwiper.dart';
+import 'package:shimmer/shimmer.dart';
 
 class AnimeHomeScreen extends StatefulWidget {
   const AnimeHomeScreen({Key? key}) : super(key: key);
@@ -20,30 +21,61 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
   late Future topCharacterReference;
   late Future topAnimeReferencePage;
   int randomImageGenerator = 0;
-  int pageNumber = 1;
+  int page = 2;
   final ScrollController _scrollController = ScrollController();
+  bool showFAB = false;
   @override
   void initState() {
     randomImageGenerator = Random().nextInt(13);
     topAnimeReference = netWorking.jikanApiCallTopAnime();
     topCharacterReference = netWorking.jikanApiCallTopCharacters();
+    _scrollController.addListener(() {
+      if (_scrollController.offset ==
+          _scrollController.position.maxScrollExtent) {
+        setState(() {
+          topAnimeReference = netWorking.jikanApiCallTopAnimeByPage(page);
+          showFAB = true;
+          page++;
+        });
+      }
+    });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   void _scrollUp() {
     _scrollController.animateTo(
       0,
-      duration: const Duration(seconds: 1),
-      curve: Curves.fastOutSlowIn,
+      duration: const Duration(seconds: 2),
+      curve: Curves.easeInOut,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    topAnimeReferencePage = netWorking.jikanApiCallTopAnimeByPage(pageNumber);
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
+      floatingActionButton: showFAB
+          ? ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.zero,
+                minimumSize: Size.fromRadius(width / 15),
+                shape: const CircleBorder(),
+                elevation: 10,
+              ),
+              onPressed: _scrollUp,
+              child: Icon(
+                Icons.arrow_upward,
+                size: width / 15,
+              ),
+            )
+          : Container(),
       backgroundColor: accent_Color,
       body: Container(
         decoration: BoxDecoration(
@@ -110,77 +142,14 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.only(
-                            left: height * 0.03,
-                            right: height * 0.03,
+                            left: width * 0.03,
+                            right: width * 0.03,
                             bottom: height * 0.05),
                         child: Stack(
                           children: [
-                            FutureBuilder(
-                                future: topCharacterReference,
-                                builder: (context, snapshot) {
-                                  if (!snapshot.hasData) {
-                                    return Center(
-                                      child: CircularProgressIndicator(
-                                        color: secondary_color,
-                                      ),
-                                    );
-                                  }
-                                  return Swiper(
-                                    autoplay: true,
-                                    duration: 200,
-                                    viewportFraction: 0.5,
-                                    scale: 0.3,
-                                    itemCount: netWorking
-                                        .listResponseTopCharacters.length,
-                                    itemBuilder: (context, index) {
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(20)),
-                                          border: Border.all(
-                                              color: Colors.white, width: 3),
-                                        ),
-                                        child: GridTile(
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(20)),
-                                            child: Image.network(
-                                              netWorking.listResponseTopCharacters[
-                                                      index]['images']['jpg']
-                                                  ['image_url'],
-                                              fit: BoxFit.fill,
-                                            ),
-                                          ),
-                                          footer: Container(
-                                            padding: const EdgeInsets.all(5),
-                                            decoration: BoxDecoration(
-                                              color: primary_color
-                                                  .withOpacity(0.5),
-                                              borderRadius:
-                                                  const BorderRadius.only(
-                                                bottomLeft:
-                                                    Radius.circular(20.0),
-                                                bottomRight: Radius.circular(
-                                                  20.0,
-                                                ),
-                                              ),
-                                            ),
-                                            child: CustomText(
-                                              text: netWorking
-                                                      .listResponseTopCharacters[
-                                                  index]['name'],
-                                              size: 15.0,
-                                              color: secondary_color,
-                                              customFontWeight: FontWeight.bold,
-                                              maxLines: 1,
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                }),
+                            TopCharactersSwiper(
+                                topCharacterReference: topCharacterReference,
+                                netWorking: netWorking),
                           ],
                         ),
                       ),
@@ -189,18 +158,16 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(left: width * 0.05, top: width * 0.05),
+                padding: EdgeInsets.only(left: width * 0.03, top: width * 0.05),
                 child: CustomText(
                     text: 'Top Anime',
                     color: Colors.white.withOpacity(0.7),
                     size: 20),
               ),
               Padding(
-                padding: const EdgeInsets.all(10.0),
+                padding: EdgeInsets.all(width * 0.03),
                 child: FutureBuilder(
-                    future: pageNumber == 1
-                        ? topAnimeReference
-                        : topAnimeReferencePage,
+                    future: topAnimeReference,
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
                         return Center(
@@ -210,105 +177,96 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
                           width: 200,
                         ));
                       }
-                      return Column(
-                        children: [
-                          GridView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                childAspectRatio: 0.6,
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 10.0,
-                              ),
-                              itemCount: netWorking.listResponseTopAnime.length,
-                              itemBuilder: (context, index) {
-                                return Hero(
-                                  tag: 'poster$index',
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) {
-                                          return AnimeInfoPage(
-                                              netWorking.listResponseTopAnime,
-                                              index);
-                                        }),
-                                      );
-                                    },
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          flex: 9,
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                fit: BoxFit.fill,
-                                                image: NetworkImage(
-                                                  netWorking.listResponseTopAnime[
-                                                          index]['images']
-                                                      ['jpg']['image_url'],
-                                                ),
-                                              ),
-                                              borderRadius:
-                                                  const BorderRadius.all(
-                                                Radius.circular(5.0),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        Expanded(
-                                          flex: 2,
-                                          child: Material(
-                                            color: Colors.transparent,
-                                            child: CustomText(
-                                              text: netWorking
-                                                  .listResponseTopAnime[index]
-                                                      ['title']
-                                                  .toString(),
-                                              size: width / 25,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }),
-                          ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                pageNumber = 2;
-
-                                networking.jikanApiCallTopAnimeByPage(2);
-                                // networking.listResponseTopAnime;
-                              });
-                              _scrollUp();
-                            },
-                            child: Text('Page No. 2'),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                pageNumber = 3;
-                                networking.jikanApiCallTopAnimeByPage(3);
-                                // networking.listResponseTopAnime;
-                              });
-                            },
-                            child: Text('Page No. 3'),
-                          ),
-                        ],
-                      );
+                      return TopAnimeGridView(width);
                     }),
               ),
             ]),
       ),
     );
+  }
+
+  GridView TopAnimeGridView(double width) {
+    return GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          childAspectRatio: 0.6,
+          crossAxisCount: 2,
+          crossAxisSpacing: 10.0,
+        ),
+        itemCount: netWorking.topAnimeResponse.length + 1,
+        itemBuilder: (context, index) {
+          if (index < netWorking.topAnimeResponse.length) {
+            return Hero(
+              tag: 'poster$index',
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) {
+                      return AnimeInfoPage(netWorking.topAnimeResponse, index);
+                    }),
+                  );
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 9,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 1, color: Colors.white),
+                          image: DecorationImage(
+                            fit: BoxFit.fill,
+                            image: NetworkImage(
+                              netWorking.topAnimeResponse[index]['images']
+                                  ['jpg']['image_url'],
+                            ),
+                          ),
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(5.0),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Material(
+                        color: Colors.transparent,
+                        child: CustomText(
+                          text: netWorking.topAnimeResponse[index]['title']
+                              .toString(),
+                          size: width / 25,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          } else {
+            return Column(
+              children: [
+                Expanded(
+                  flex: 9,
+                  child: Shimmer.fromColors(
+                    child: Container(
+                      color: Colors.grey,
+                    ),
+                    baseColor: Colors.transparent,
+                    highlightColor: Colors.grey[300]!,
+                    enabled: true,
+                    direction: ShimmerDirection.ttb,
+                  ),
+                ),
+                Expanded(flex: 2, child: Container()),
+              ],
+            );
+          }
+        });
   }
 }
