@@ -39,6 +39,9 @@ dependencies:
   url_launcher: ^6.0.20
   google_fonts: ^3.0.1
   flutter_swiper: ^1.1.6
+  number_pagination: ^0.0.3+2
+  provider: ^6.0.3
+  shimmer: ^2.0.0
 
 dev_dependencies:
   flutter_test:
