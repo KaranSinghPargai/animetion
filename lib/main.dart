@@ -1,8 +1,10 @@
+import 'package:animetion/services/networking.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io';
 import 'package:animetion/Screens/loading_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(Animetion());
@@ -43,9 +45,15 @@ class _AnimetionState extends State<Animetion>
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(textTheme: GoogleFonts.firaSansTextTheme().apply()),
-      home: LoadingScreen(isConnected: _isConnected),
+    return ChangeNotifierProvider<Networking>(
+      create: (_) => Networking(),
+      builder: (context, widget) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(textTheme: GoogleFonts.firaSansTextTheme().apply()),
+          home: LoadingScreen(isConnected: _isConnected),
+        );
+      },
     );
   }
 }

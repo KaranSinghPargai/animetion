@@ -6,7 +6,7 @@ import 'package:animetion/services/networking.dart';
 import 'dart:math';
 import 'package:animetion/utilities/constants.dart';
 import 'package:animetion/widgets/topCharacterSwiper.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:animetion/widgets/loading_shimmer.dart';
 
 class AnimeHomeScreen extends StatefulWidget {
   const AnimeHomeScreen({Key? key}) : super(key: key);
@@ -166,8 +166,8 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
               ),
               Padding(
                 padding: EdgeInsets.all(width * 0.03),
-                child: FutureBuilder(
-                    future: topAnimeReference,
+                child: StreamBuilder(
+                    stream: topAnimeReference.asStream(),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
                         return Center(
@@ -177,7 +177,7 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
                           width: 200,
                         ));
                       }
-                      return TopAnimeGridView(width);
+                      return topAnimeGridView(width);
                     }),
               ),
             ]),
@@ -185,7 +185,7 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
     );
   }
 
-  GridView TopAnimeGridView(double width) {
+  GridView topAnimeGridView(double width) {
     return GridView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -194,7 +194,9 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
           crossAxisCount: 2,
           crossAxisSpacing: 10.0,
         ),
-        itemCount: netWorking.topAnimeResponse.length + 1,
+        itemCount: netWorking.hasNextPage
+            ? netWorking.topAnimeResponse.length + 1
+            : netWorking.topAnimeResponse.length,
         itemBuilder: (context, index) {
           if (index < netWorking.topAnimeResponse.length) {
             return Hero(
@@ -215,7 +217,6 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
                       flex: 9,
                       child: Container(
                         decoration: BoxDecoration(
-                          border: Border.all(width: 1, color: Colors.white),
                           image: DecorationImage(
                             fit: BoxFit.fill,
                             image: NetworkImage(
@@ -249,23 +250,9 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
               ),
             );
           } else {
-            return Column(
-              children: [
-                Expanded(
-                  flex: 9,
-                  child: Shimmer.fromColors(
-                    child: Container(
-                      color: Colors.grey,
-                    ),
-                    baseColor: Colors.transparent,
-                    highlightColor: Colors.grey[300]!,
-                    enabled: true,
-                    direction: ShimmerDirection.ttb,
-                  ),
-                ),
-                Expanded(flex: 2, child: Container()),
-              ],
-            );
+            return networking.hasNextPage
+                ? const LoadingShimmer()
+                : Container();
           }
         });
   }

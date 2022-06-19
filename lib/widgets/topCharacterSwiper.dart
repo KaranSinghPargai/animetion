@@ -34,37 +34,44 @@ class TopCharactersSwiper extends StatelessWidget {
             scale: 0.3,
             itemCount: netWorking.topCharactersResponse.length,
             itemBuilder: (context, index) {
-              return Container(
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(20)),
-                  border: Border.all(color: Colors.white, width: 3),
+              return Card(
+                shadowColor: Colors.black,
+                elevation: 10,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
                 ),
-                child: GridTile(
-                  child: ClipRRect(
+                child: Container(
+                  decoration: BoxDecoration(
                     borderRadius: const BorderRadius.all(Radius.circular(20)),
-                    child: Image.network(
-                      netWorking.topCharactersResponse[index]['images']['jpg']
-                          ['image_url'],
-                      fit: BoxFit.fill,
-                    ),
+                    border: Border.all(color: Colors.grey, width: 1),
                   ),
-                  footer: Container(
-                    padding: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      color: primary_color.withOpacity(0.5),
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(20.0),
-                        bottomRight: Radius.circular(
-                          20.0,
-                        ),
+                  child: GridTile(
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.all(Radius.circular(20)),
+                      child: Image.network(
+                        netWorking.topCharactersResponse[index]['images']['jpg']
+                            ['image_url'],
+                        fit: BoxFit.fill,
                       ),
                     ),
-                    child: CustomText(
-                      text: netWorking.topCharactersResponse[index]['name'],
-                      size: 15.0,
-                      color: secondary_color,
-                      customFontWeight: FontWeight.bold,
-                      maxLines: 1,
+                    footer: Container(
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: primary_color.withOpacity(0.5),
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(20.0),
+                          bottomRight: Radius.circular(
+                            20.0,
+                          ),
+                        ),
+                      ),
+                      child: CustomText(
+                        text: netWorking.topCharactersResponse[index]['name'],
+                        size: 15.0,
+                        color: secondary_color,
+                        customFontWeight: FontWeight.bold,
+                        maxLines: 1,
+                      ),
                     ),
                   ),
                 ),
