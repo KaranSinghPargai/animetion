@@ -3,7 +3,9 @@ import 'package:animetion/services/networking.dart';
 import 'package:animetion/utilities/constants.dart';
 import 'package:animetion/widgets/addSpace.dart';
 import 'package:animetion/widgets/custom_text.dart';
+import 'package:animetion/widgets/loading_shimmer.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
@@ -15,12 +17,16 @@ class SearchScreen extends StatefulWidget {
 Networking networking = Networking();
 
 class _SearchScreenState extends State<SearchScreen> {
+  // Local variables
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool isLoading = true;
   int page = 2;
   final ScrollController _scrollController = ScrollController();
   bool showFAB = false;
   bool hasMore = true;
   String userSearch = '';
+
+// Local functions
   void initiateSearch(String search) async {
     if (page >= 3) {
       page = 2;
@@ -29,7 +35,16 @@ class _SearchScreenState extends State<SearchScreen> {
     await networking.jikanApiCallSearchedAnime(search);
     setState(() {
       isLoading = false;
+      networking.hasNextPage;
     });
+  }
+
+  void _scrollUp() {
+    _scrollController.animateTo(
+      0,
+      duration: const Duration(seconds: 2),
+      curve: Curves.easeInOut,
+    );
   }
 
   final fieldText = TextEditingController();
@@ -42,6 +57,7 @@ class _SearchScreenState extends State<SearchScreen> {
     setState(() {
       userSearch = search;
     });
+
     return userSearch;
   }
 
@@ -50,18 +66,26 @@ class _SearchScreenState extends State<SearchScreen> {
     _scrollController.addListener(() {
       if (_scrollController.offset ==
           _scrollController.position.maxScrollExtent) {
-        setState(() {
-          networking.jikanApiCallSearchedAnimeByPage(userSearch, page);
-          networking.searchAnimeResponse;
-          showFAB = true;
-          page++;
-          // if (networking.newItemForSearch.length <= 25) {
-          //   hasMore = false;
-          // }
-        });
+        scrollBypage();
       }
     });
     super.initState();
+  }
+
+  void scrollBypage() async {
+    if (networking.hasNextPage) {
+      await networking.jikanApiCallSearchedAnimeByPage(userSearch, page);
+      setState(() {
+        networking.searchAnimeResponse;
+        showFAB = true;
+        page++;
+        networking.hasNextPage;
+      });
+    }
+    if (!networking.hasNextPage) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("You've reached the end of the results")));
+    }
   }
 
   @override
@@ -70,19 +94,12 @@ class _SearchScreenState extends State<SearchScreen> {
     super.dispose();
   }
 
-  void _scrollUp() {
-    _scrollController.animateTo(
-      0,
-      duration: const Duration(seconds: 2),
-      curve: Curves.easeInOut,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: primary_color,
       body: Container(
         decoration: BoxDecoration(
@@ -186,89 +203,94 @@ class _SearchScreenState extends State<SearchScreen> {
                       ),
                     ),
                   )
-                : Padding(
-                    padding: EdgeInsets.symmetric(horizontal: width * 0.02),
-                    child: GridView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          childAspectRatio: 0.6,
-                          crossAxisCount:
-                              networking.searchAnimeResponse.isEmpty ? 1 : 2,
-                          crossAxisSpacing: 10.0,
-                          mainAxisSpacing: 5.0,
-                        ),
-                        itemCount: networking.searchAnimeResponse.length + 1,
-                        itemBuilder: (context, index) {
-                          if (networking.searchAnimeResponse.isEmpty) {
-                            return CustomText(
-                                text: 'No results found, try another keywords',
-                                color: secondary_color,
-                                size: 20);
-                          }
-                          if (index < networking.searchAnimeResponse.length) {
-                            return Hero(
-                              tag: 'poster$index',
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) {
-                                        return AnimeInfoPage(
-                                            networking.searchAnimeResponse,
-                                            index);
-                                      }),
-                                    );
-                                  });
-                                },
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Expanded(
-                                      flex: 9,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            fit: BoxFit.fill,
-                                            image: NetworkImage(networking
-                                                    .searchAnimeResponse[index]
-                                                ['images']['jpg']['image_url']),
-                                          ),
-                                          borderRadius: const BorderRadius.all(
-                                            Radius.circular(5.0),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 2,
-                                      child: Material(
-                                        color: Colors.transparent,
-                                        child: CustomText(
-                                          text: networking
-                                              .searchAnimeResponse[index]
-                                                  ['title']
-                                              .toString(),
-                                          size: 18.0,
-                                          color: secondary_color,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          } else {
-                            return hasMore
-                                ? Center(child: CircularProgressIndicator())
-                                : Text('End of results');
-                          }
-                        }),
-                  ),
+                : searchedGridView(width),
           ],
         ),
       ),
+    );
+  }
+
+  Padding searchedGridView(double width) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: width * 0.02),
+      child: GridView.builder(
+          padding: EdgeInsets.zero,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            childAspectRatio: 0.6,
+            crossAxisCount: networking.searchAnimeResponse.isEmpty ? 1 : 2,
+            crossAxisSpacing: 10.0,
+            mainAxisSpacing: 5.0,
+          ),
+          itemCount: networking.hasNextPage
+              ? networking.searchAnimeResponse.length + 1
+              : networking.searchAnimeResponse.length,
+          itemBuilder: (context, index) {
+            if (networking.searchAnimeResponse.isEmpty) {
+              return CustomText(
+                  text: 'No results found, try another keywords',
+                  color: secondary_color,
+                  size: 20);
+            }
+            if (index < networking.searchAnimeResponse.length) {
+              return Hero(
+                tag: 'poster$index',
+                child: GestureDetector(
+                  onTap: () {
+                    print(networking.searchAnimeResponse.length);
+
+                    setState(() {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) {
+                          return AnimeInfoPage(
+                              networking.searchAnimeResponse, index);
+                        }),
+                      );
+                    });
+                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 9,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              fit: BoxFit.fill,
+                              image: NetworkImage(
+                                  networking.searchAnimeResponse[index]
+                                      ['images']['jpg']['image_url']),
+                            ),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(5.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Material(
+                          color: Colors.transparent,
+                          child: CustomText(
+                            text: networking.searchAnimeResponse[index]['title']
+                                .toString(),
+                            size: 18.0,
+                            color: secondary_color,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            } else {
+              return networking.hasNextPage
+                  ? const LoadingShimmer()
+                  : Container();
+            }
+          }),
     );
   }
 }
