@@ -1,6 +1,7 @@
 import 'package:animetion/Screens/animeInfoPage.dart';
 import 'package:animetion/services/networking.dart';
 import 'package:animetion/utilities/constants.dart';
+import 'package:animetion/utilities/themeNotifier.dart';
 import 'package:animetion/widgets/addSpace.dart';
 import 'package:animetion/widgets/custom_text.dart';
 import 'package:animetion/widgets/loading_shimmer.dart';
@@ -96,19 +97,20 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool darkmode = Provider.of<ThemeNotifier>(context).darkMode;
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: primary_color,
+      backgroundColor: darkmode ? darkModePrimaryColor : lightModePrimaryColor,
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              accent_Color,
-              primary_color,
+              darkmode ? darkModeAccentColor : lightModeAccentColor,
+              darkmode ? darkModePrimaryColor : lightModePrimaryColor
             ],
             stops: const [0.3, 0.5],
           ),
@@ -122,7 +124,7 @@ class _SearchScreenState extends State<SearchScreen> {
               height: height * 0.4,
               width: double.infinity,
               decoration: BoxDecoration(
-                  color: accent_Color,
+                  color: darkmode ? darkModeAccentColor : lightModeAccentColor,
                   borderRadius: const BorderRadius.only(
                       bottomRight: Radius.circular(50.0),
                       bottomLeft: Radius.circular(50.0))),
@@ -130,18 +132,17 @@ class _SearchScreenState extends State<SearchScreen> {
                 children: [
                   CustomText(
                       text: 'Search anime you want',
-                      color: secondary_color,
-                      size: 25.0),
+                      color: darkmode ? Colors.white : Colors.black,
+                      size: width / 15.6),
                   AddVerticalSpace(
                     height * 0.03,
                   ),
                   TextField(
                     controller: fieldText,
                     style: TextStyle(
-                      color: secondary_color,
-                      fontFamily: 'Asap',
+                      color: darkmode ? Colors.white : Colors.black,
                     ),
-                    cursorColor: secondary_color,
+                    cursorColor: darkmode ? Colors.white : Colors.black,
                     onSubmitted: (newVal) {
                       searchText(newVal);
                       initiateSearch(newVal);
@@ -153,19 +154,18 @@ class _SearchScreenState extends State<SearchScreen> {
                           Radius.circular(20.0),
                         ),
                         borderSide: BorderSide(
-                          color: secondary_color,
+                          color: darkmode ? Colors.white : Colors.black,
                         ),
                       ),
-                      hintStyle: const TextStyle(
-                          color: Color(0xff0B354F), fontFamily: 'Asap'),
+                      hintStyle: const TextStyle(color: Color(0xff0B354F)),
                       label: CustomText(
                         text: 'Anime',
-                        size: 20,
-                        color: secondary_color,
+                        size: width / 20,
+                        color: darkmode ? Colors.white : Colors.black,
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: secondary_color,
+                          color: darkmode ? Colors.white : Colors.black,
                         ),
                         borderRadius: const BorderRadius.all(
                           Radius.circular(20.0),
@@ -180,13 +180,15 @@ class _SearchScreenState extends State<SearchScreen> {
                       ? Container()
                       : CustomText(
                           text: 'You Searched For :',
-                          color: secondary_color,
-                          size: 15),
+                          color: darkmode ? Colors.white : Colors.black,
+                          size: width / 26),
                   const SizedBox(
                     height: 10,
                   ),
                   CustomText(
-                      text: userSearch, color: secondary_color, size: 18.0),
+                      text: userSearch,
+                      color: darkmode ? Colors.white : Colors.black,
+                      size: width / 22),
                 ],
               ),
             ),
@@ -194,103 +196,106 @@ class _SearchScreenState extends State<SearchScreen> {
               height * 0.03,
             ),
             isLoading
-                ? const Center(
+                ? Center(
                     child: Image(
-                      width: 200,
-                      height: 200,
-                      image: AssetImage(
+                      width: width / 1.95,
+                      height: width / 1.95,
+                      image: const AssetImage(
                         'images/search.gif',
                       ),
                     ),
                   )
-                : searchedGridView(width),
+                : Padding(
+                    padding: EdgeInsets.symmetric(horizontal: width * 0.02),
+                    child: GridView.builder(
+                        padding: EdgeInsets.zero,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          childAspectRatio: 0.6,
+                          crossAxisCount:
+                              networking.searchAnimeResponse.isEmpty ? 1 : 2,
+                          crossAxisSpacing: 10.0,
+                          mainAxisSpacing: 5.0,
+                        ),
+                        itemCount: networking.hasNextPage
+                            ? networking.searchAnimeResponse.length + 1
+                            : networking.searchAnimeResponse.length,
+                        itemBuilder: (context, index) {
+                          if (networking.searchAnimeResponse.isEmpty) {
+                            return CustomText(
+                                text: 'No results found, try another keywords',
+                                color: darkmode ? Colors.white : Colors.black,
+                                size: width / 19.5);
+                          }
+                          if (index < networking.searchAnimeResponse.length) {
+                            return Hero(
+                              tag: 'poster$index',
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) {
+                                        return AnimeInfoPage(
+                                            networking.searchAnimeResponse,
+                                            index);
+                                      }),
+                                    );
+                                  });
+                                },
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      flex: 9,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            fit: BoxFit.fill,
+                                            image: NetworkImage(networking
+                                                    .searchAnimeResponse[index]
+                                                ['images']['jpg']['image_url']),
+                                          ),
+                                          borderRadius: const BorderRadius.all(
+                                            Radius.circular(5.0),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Material(
+                                        color: Colors.transparent,
+                                        child: CustomText(
+                                          text: networking
+                                              .searchAnimeResponse[index]
+                                                  ['title']
+                                              .toString(),
+                                          size: width / 25,
+                                          color: darkmode
+                                              ? Colors.white
+                                              : Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          } else {
+                            return networking.hasNextPage
+                                ? const LoadingShimmer()
+                                : Container();
+                          }
+                        }),
+                  ),
           ],
         ),
       ),
-    );
-  }
-
-  Padding searchedGridView(double width) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: width * 0.02),
-      child: GridView.builder(
-          padding: EdgeInsets.zero,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            childAspectRatio: 0.6,
-            crossAxisCount: networking.searchAnimeResponse.isEmpty ? 1 : 2,
-            crossAxisSpacing: 10.0,
-            mainAxisSpacing: 5.0,
-          ),
-          itemCount: networking.hasNextPage
-              ? networking.searchAnimeResponse.length + 1
-              : networking.searchAnimeResponse.length,
-          itemBuilder: (context, index) {
-            if (networking.searchAnimeResponse.isEmpty) {
-              return CustomText(
-                  text: 'No results found, try another keywords',
-                  color: secondary_color,
-                  size: 20);
-            }
-            if (index < networking.searchAnimeResponse.length) {
-              return Hero(
-                tag: 'poster$index',
-                child: GestureDetector(
-                  onTap: () {
-                    print(networking.searchAnimeResponse.length);
-
-                    setState(() {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) {
-                          return AnimeInfoPage(
-                              networking.searchAnimeResponse, index);
-                        }),
-                      );
-                    });
-                  },
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        flex: 9,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              fit: BoxFit.fill,
-                              image: NetworkImage(
-                                  networking.searchAnimeResponse[index]
-                                      ['images']['jpg']['image_url']),
-                            ),
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(5.0),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Material(
-                          color: Colors.transparent,
-                          child: CustomText(
-                            text: networking.searchAnimeResponse[index]['title']
-                                .toString(),
-                            size: 18.0,
-                            color: secondary_color,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            } else {
-              return networking.hasNextPage
-                  ? const LoadingShimmer()
-                  : Container();
-            }
-          }),
     );
   }
 }

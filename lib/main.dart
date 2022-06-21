@@ -1,4 +1,5 @@
-import 'package:animetion/services/networking.dart';
+// @dart=2.9
+import 'package:animetion/utilities/themeNotifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io';
@@ -45,8 +46,8 @@ class _AnimetionState extends State<Animetion>
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<Networking>(
-      create: (_) => Networking(),
+    return ChangeNotifierProvider<ThemeNotifier>(
+      create: (_) => ThemeNotifier(),
       builder: (context, widget) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
