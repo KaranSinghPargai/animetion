@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class Networking extends ChangeNotifier {
+class Networking {
   String jikanApiURL = 'https://api.jikan.moe/v4';
   Map _mapResponseTopAnime = {};
   Map _mapResponseSearchAnime = {};

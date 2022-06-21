@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 
-double height(BuildContext context) {
-  double Screenheight = MediaQuery.of(context).size.height;
-  return Screenheight;
-}
+Color darkModeAccentColor = const Color(0xffCA2A6B);
+Color darkModePrimaryColor = const Color(0xff1D131F);
+Color darkModeSecondaryColor = const Color(0xff524A51);
 
-double width(BuildContext context) {
-  double ScreenWidth = MediaQuery.of(context).size.width;
-  return ScreenWidth;
-}
-Color primary_color = Color(0xff2C3333);
-Color accent_Color = Colors.deepOrangeAccent;
-Color secondary_color= Color(0xffF5F2E7);
-
+Color lightModePrimaryColor = const Color(0xffE5F1E5);
+Color lightModeAccentColor = const Color(0xffA9F4B6);
+Color lightModeSecondaryColor = const Color(0xff94F6A7);

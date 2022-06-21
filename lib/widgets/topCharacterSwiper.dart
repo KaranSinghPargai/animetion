@@ -20,9 +20,9 @@ class TopCharactersSwiper extends StatelessWidget {
         future: topCharacterReference,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(
-                color: secondary_color,
+                color: Colors.white,
               ),
             );
           }
@@ -38,16 +38,16 @@ class TopCharactersSwiper extends StatelessWidget {
                 shadowColor: Colors.black,
                 elevation: 10,
                 shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
                 ),
                 child: Container(
                   decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                    borderRadius: const BorderRadius.all(Radius.circular(15)),
                     border: Border.all(color: Colors.grey, width: 1),
                   ),
                   child: GridTile(
                     child: ClipRRect(
-                      borderRadius: const BorderRadius.all(Radius.circular(20)),
+                      borderRadius: const BorderRadius.all(Radius.circular(15)),
                       child: Image.network(
                         netWorking.topCharactersResponse[index]['images']['jpg']
                             ['image_url'],
@@ -57,18 +57,18 @@ class TopCharactersSwiper extends StatelessWidget {
                     footer: Container(
                       padding: const EdgeInsets.all(5),
                       decoration: BoxDecoration(
-                        color: primary_color.withOpacity(0.5),
+                        color: darkModePrimaryColor.withOpacity(0.5),
                         borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(20.0),
+                          bottomLeft: Radius.circular(15.0),
                           bottomRight: Radius.circular(
-                            20.0,
+                            15.0,
                           ),
                         ),
                       ),
                       child: CustomText(
                         text: netWorking.topCharactersResponse[index]['name'],
                         size: 15.0,
-                        color: secondary_color,
+                        color: Colors.white,
                         customFontWeight: FontWeight.bold,
                         maxLines: 1,
                       ),
