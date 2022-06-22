@@ -22,9 +22,9 @@ class Networking {
       _mapResponseSearchAnime = json.decode(apiResponse.body);
       searchAnimeResponse = _mapResponseSearchAnime['data'];
       hasNextPage = _mapResponseSearchAnime['pagination']['has_next_page'];
-      print('has next page : $hasNextPage');
+      // print('has next page : $hasNextPage');
       totalResults = _mapResponseSearchAnime['pagination']['items']['total'];
-      print(totalResults);
+      // print(totalResults);
     }
     return searchAnimeResponse;
   }
@@ -36,10 +36,10 @@ class Networking {
     if (apiResponse.statusCode == 200) {
       _mapResponseSearchAnime = json.decode(apiResponse.body);
       hasNextPage = _mapResponseSearchAnime['pagination']['has_next_page'];
-      print('has next page : $hasNextPage');
+      // print('has next page : $hasNextPage');
       final List newItems = _mapResponseSearchAnime['data'];
       newItemForSearch = newItems;
-      print('page $page for $searchAnime');
+      // print('page $page for $searchAnime');
       searchAnimeResponse.addAll(newItems);
     }
     return searchAnimeResponse;
@@ -71,7 +71,7 @@ class Networking {
         await http.get(Uri.parse('$jikanApiURL/top/anime?&page=$page'));
 
     if (apiResponse.statusCode == 200) {
-      print('page $page fetched');
+      // print('page $page fetched');
       _mapResponseTopAnime = json.decode(apiResponse.body);
       final List newItems = _mapResponseTopAnime['data'];
       topAnimeResponse.addAll(newItems);
@@ -85,7 +85,7 @@ class Networking {
     if (apiResponse.statusCode == 200) {
       _mapResponseRecentEpisodes = json.decode(apiResponse.body);
       recentEpisodesResponse = _mapResponseRecentEpisodes['data'];
-      print(recentEpisodesResponse.length);
+      // print(recentEpisodesResponse.length);
     }
     return recentEpisodesResponse;
   }

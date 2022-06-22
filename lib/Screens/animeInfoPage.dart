@@ -98,6 +98,7 @@ class _AnimeInfoPageState extends State<AnimeInfoPage> {
                           ),
                         ),
                   CustomText(
+                      maxLines: 5,
                       text: widget.listResponse[widget.animeIDIndex]['title']
                           .toString(),
                       color: darkmode ? Colors.white : Colors.black,
@@ -335,6 +336,7 @@ class _AnimeInfoPageState extends State<AnimeInfoPage> {
                               text: 'English name',
                               color: darkmode ? Colors.white : Colors.black,
                               size: width / 32.6,
+                              maxLines: 5,
                             ),
                             const SizedBox(height: 5.0),
                             widget.listResponse[widget.animeIDIndex]

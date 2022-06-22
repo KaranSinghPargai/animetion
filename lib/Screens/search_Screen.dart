@@ -116,6 +116,9 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         ),
         child: ListView(
+          physics: networking.totalResults == 0
+              ? const NeverScrollableScrollPhysics()
+              : const ClampingScrollPhysics(),
           controller: _scrollController,
           children: [
             Container(

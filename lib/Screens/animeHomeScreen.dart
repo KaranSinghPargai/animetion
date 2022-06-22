@@ -355,12 +355,7 @@ class _AnimeHomeScreenState extends State<AnimeHomeScreen> {
                                   : netWorking.recentEpisodesResponse.length,
                               itemBuilder: (context, index) {
                                 if (netWorking.recentEpisodesResponse.isEmpty) {
-                                  return GestureDetector(
-                                      onTap: (() {
-                                        print(
-                                            netWorking.recentEpisodesResponse);
-                                      }),
-                                      child: Text('no data '));
+                                  return const CircularProgressIndicator();
                                 } else {
                                   return Hero(
                                     tag: 'recent$index',
