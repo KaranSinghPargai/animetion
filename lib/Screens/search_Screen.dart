@@ -218,11 +218,11 @@ class _SearchScreenState extends State<SearchScreen> {
                           crossAxisSpacing: 10.0,
                           mainAxisSpacing: 5.0,
                         ),
-                        itemCount: networking.hasNextPage
-                            ? networking.searchAnimeResponse.length + 1
-                            : networking.searchAnimeResponse.length,
+                        itemCount: networking.totalResults == 0
+                            ? 1
+                            : networking.searchAnimeResponse.length + 1,
                         itemBuilder: (context, index) {
-                          if (networking.searchAnimeResponse.isEmpty) {
+                          if (networking.totalResults == 0) {
                             return CustomText(
                                 text: 'No results found, try another keywords',
                                 color: darkmode ? Colors.white : Colors.black,

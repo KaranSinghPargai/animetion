@@ -184,7 +184,7 @@ class _AnimeInfoPageState extends State<AnimeInfoPage> {
                                         .toString() +
                                     ' Episodes',
                                 color: darkmode ? Colors.white : Colors.black,
-                                size: width / 30),
+                                size: width / 18),
                       ),
                     ],
                   ),

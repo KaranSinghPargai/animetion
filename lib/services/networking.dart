@@ -11,6 +11,9 @@ class Networking {
   List topCharactersResponse = [];
   List newItemForSearch = [];
   bool hasNextPage = true;
+  Map _mapResponseRecentEpisodes = {};
+  List recentEpisodesResponse = [];
+  int totalResults = 0;
   Future jikanApiCallSearchedAnime(String searchAnime) async {
     http.Response apiResponse;
     apiResponse =
@@ -20,6 +23,8 @@ class Networking {
       searchAnimeResponse = _mapResponseSearchAnime['data'];
       hasNextPage = _mapResponseSearchAnime['pagination']['has_next_page'];
       print('has next page : $hasNextPage');
+      totalResults = _mapResponseSearchAnime['pagination']['items']['total'];
+      print(totalResults);
     }
     return searchAnimeResponse;
   }
@@ -72,5 +77,16 @@ class Networking {
       topAnimeResponse.addAll(newItems);
     }
     return topAnimeResponse;
+  }
+
+  Future jikanApiCallRecentEpisodes() async {
+    http.Response apiResponse;
+    apiResponse = await http.get(Uri.parse('$jikanApiURL/watch/episodes'));
+    if (apiResponse.statusCode == 200) {
+      _mapResponseRecentEpisodes = json.decode(apiResponse.body);
+      recentEpisodesResponse = _mapResponseRecentEpisodes['data'];
+      print(recentEpisodesResponse.length);
+    }
+    return recentEpisodesResponse;
   }
 }

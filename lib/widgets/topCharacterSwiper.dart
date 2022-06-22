@@ -16,6 +16,7 @@ class TopCharactersSwiper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     return FutureBuilder(
         future: topCharacterReference,
         builder: (context, snapshot) {
@@ -30,8 +31,8 @@ class TopCharactersSwiper extends StatelessWidget {
             fade: 1,
             autoplay: true,
             duration: 200,
-            viewportFraction: 0.4,
-            scale: 0.3,
+            viewportFraction: 0.35,
+            scale: 0.1,
             itemCount: netWorking.topCharactersResponse.length,
             itemBuilder: (context, index) {
               return Card(
@@ -67,9 +68,8 @@ class TopCharactersSwiper extends StatelessWidget {
                       ),
                       child: CustomText(
                         text: netWorking.topCharactersResponse[index]['name'],
-                        size: 15.0,
+                        size: width / 30,
                         color: Colors.white,
-                        customFontWeight: FontWeight.bold,
                         maxLines: 1,
                       ),
                     ),
